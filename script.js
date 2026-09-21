@@ -279,8 +279,13 @@ function openDashboardViewer(dashId) {
         });
     }
 
-    loadDashboardContent(dash);
+    // Exibe o viewer antes de carregar o iframe.
+    // Isso evita inicializar o dashboard enquanto o container ainda está oculto.
     navigateTo('viewer');
+
+    requestAnimationFrame(() => {
+        loadDashboardContent(dash);
+    });
 }
 
 function switchViewerDashboard(dashId) {
