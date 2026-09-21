@@ -316,6 +316,9 @@ function loadDashboardContent(dash) {
 
         if (loader) loader.classList.remove('hidden');
 
+        const embedError = document.getElementById('embed-error');
+        if (embedError) embedError.remove();
+
         clearTimeout(iframe._loadTimeout);
 
         iframe.onload = () => {
@@ -328,7 +331,9 @@ function loadDashboardContent(dash) {
             renderEmbedError(dash);
         };
 
-        // Usa exatamente a URL de incorporação gerada pelo Looker Studio.
+        // A URL principal já está definida diretamente no HTML para reproduzir
+        // a mesma estrutura mínima que foi validada no teste. Em trocas de
+        // dashboard, atualizamos apenas o src do iframe.
         iframe.src = embedUrl;
 
         // O onload de um iframe pode disparar mesmo quando o conteúdo interno
