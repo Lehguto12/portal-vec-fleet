@@ -1,0 +1,367 @@
+/* =========================================================
+   STYLE.CSS
+   Portal VEC Fleet
+   Identidade visual DHL - discreta
+   ========================================================= */
+
+:root {
+    --dhl-yellow: #ffcc00;
+    --dhl-yellow-dark: #e6b800;
+    --dhl-red: #d40511;
+
+    --dark-bg: #f7f8fb;
+    --dark-card: #ab1a21;
+    --dark-border: #1f293d;
+    --dark-hover: #1a2336;
+
+    --text-primary: #fafafa;
+    --text-secondary: #ffffff;
+}
+
+
+/* =========================================================
+   BASE
+   ========================================================= */
+
+html {
+    background: var(--dark-bg);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+
+    background-color: var(--dark-bg) !important;
+    color: var(--text-primary);
+
+    font-family:
+        'Plus Jakarta Sans',
+        Arial,
+        sans-serif;
+}
+
+
+/* =========================================================
+   CORES DARK CUSTOMIZADAS
+   ========================================================= */
+
+.bg-dark-bg {
+    background-color: var(--dark-bg) !important;
+}
+
+.bg-dark-card {
+    background-color: var(--dark-card) !important;
+}
+
+.bg-dark-hover {
+    background-color: var(--dark-hover) !important;
+}
+
+.border-dark-border {
+    border-color: var(--dark-border) !important;
+}
+
+
+/* =========================================================
+   HOVER DARK
+   ========================================================= */
+
+.hover\:bg-dark-hover:hover {
+    background-color: var(--dark-hover) !important;
+}
+
+.hover\:bg-dark-border:hover {
+    background-color: var(--dark-border) !important;
+}
+
+
+/* =========================================================
+   DHL AMARELO
+   ========================================================= */
+
+.bg-amber-400 {
+    background-color: var(--dhl-yellow) !important;
+}
+
+.bg-amber-500 {
+    background-color: var(--dhl-yellow) !important;
+}
+
+.text-amber-400 {
+    color: var(--dhl-yellow) !important;
+}
+
+.text-amber-500 {
+    color: var(--dhl-yellow) !important;
+}
+
+.border-amber-500 {
+    border-color: var(--dhl-yellow) !important;
+}
+
+.border-amber-500\/20 {
+    border-color: rgba(251, 207, 32, 0.2) !important;
+}
+
+.border-amber-500\/30 {
+    border-color: rgba(255, 215, 55, 0.3) !important;
+}
+
+.bg-amber-500\/10 {
+    background-color: rgba(255, 204, 0, 0.10) !important;
+}
+
+.bg-amber-500\/20 {
+    background-color: rgba(255, 204, 0, 0.20) !important;
+}
+
+.bg-amber-500\/30 {
+    background-color: rgba(255, 204, 0, 0.30) !important;
+}
+
+
+/* =========================================================
+   HOVER AMARELO
+   ========================================================= */
+
+.hover\:bg-amber-400:hover {
+    background-color: var(--dhl-yellow-dark) !important;
+}
+
+.hover\:bg-amber-600:hover {
+    background-color: var(--dhl-yellow-dark) !important;
+}
+
+
+/* =========================================================
+   VERMELHO DHL
+   ========================================================= */
+
+.text-red-400 {
+    color: var(--dhl-red) !important;
+}
+
+.text-red-500 {
+    color: var(--dhl-red) !important;
+}
+
+.text-red-600 {
+    color: var(--dhl-red) !important;
+}
+
+.bg-red-500 {
+    background-color: var(--dhl-red) !important;
+}
+
+.bg-red-600 {
+    background-color: var(--dhl-red) !important;
+}
+
+.border-red-500 {
+    border-color: var(--dhl-red) !important;
+}
+
+
+/* =========================================================
+   TEXTO
+   ========================================================= */
+
+.text-slate-100 {
+    color: #fefefe !important;
+}
+
+.text-slate-200 {
+    color: #fefefe !important;
+}
+
+.text-slate-300 {
+    color: #fefefe !important;
+}
+
+.text-slate-400 {
+    color: #fefefe !important;
+}
+
+.text-slate-500 {
+    color: #fefefe !important;
+}
+
+
+/* =========================================================
+   ELEMENTOS PRINCIPAIS
+   ========================================================= */
+
+header {
+    background-color: rgba(0, 81, 255, 0.9);
+    border-color: var(--dark-border) !important;
+}
+
+aside {
+    background-color: var(--dark-card) !important;
+    border-color: var(--dark-border) !important;
+}
+
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+input,
+select,
+textarea {
+    color: #e2e8f0;
+}
+
+input::placeholder {
+    color: #0666ed;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--dhl-yellow) !important;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+}
+
+
+/* =========================================================
+   BOTÕES
+   ========================================================= */
+
+button {
+    cursor: pointer;
+}
+
+button.bg-amber-500 {
+    background-color: var(--dhl-yellow) !important;
+    color: #111827 !important;
+}
+
+button.bg-amber-500:hover {
+    background-color: var(--dhl-yellow-dark) !important;
+}
+
+
+/* =========================================================
+   FILTROS
+   ========================================================= */
+
+.filter-btn {
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.filter-btn.active,
+.filter-btn.bg-amber-500 {
+    background-color: var(--dhl-yellow) !important;
+    color: #111827 !important;
+    border-color: var(--dhl-yellow) !important;
+}
+
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.bg-dark-card {
+    border-color: var(--dark-border);
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #ffcc00;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--dhl-yellow);
+}
+
+
+/* =========================================================
+   SELEÇÃO
+   ========================================================= */
+
+::selection {
+    background: rgba(255, 204, 0, 0.30);
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   TRANSIÇÕES
+   ========================================================= */
+
+button,
+a,
+input,
+select,
+textarea {
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+/* =========================================================
+   ANIMAÇÕES ORIGINAIS
+   ========================================================= */
+
+.fade-enter {
+    opacity: 0;
+    transform: translateY(6px);
+}
+
+.fade-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+        opacity 250ms ease,
+        transform 250ms ease;
+}
+
+
+/* =========================================================
+   FOCO
+   ========================================================= */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid rgba(255, 204, 0, 0.7);
+    outline-offset: 2px;
+}
+
+
+/* =========================================================
+   RESPONSIVO
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+    }
+}
