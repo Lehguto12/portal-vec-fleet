@@ -314,8 +314,6 @@ function loadDashboardContent(dash) {
 
         const embedUrl = normalizeLookerEmbedUrl(dash.url);
 
-        if (loader) loader.classList.remove('hidden');
-
         const embedError = document.getElementById('embed-error');
         if (embedError) embedError.remove();
 
