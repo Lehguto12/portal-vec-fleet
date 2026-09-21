@@ -90,7 +90,7 @@ const DEFAULT_DASHBOARDS = [
     }
 ];
 
-const DASHBOARDS_STORAGE_KEY = 'vec_dashboards_v3';
+const DASHBOARDS_STORAGE_KEY = 'vec_dashboards_v4';
 let dashboardsData = JSON.parse(localStorage.getItem(DASHBOARDS_STORAGE_KEY)) || JSON.parse(JSON.stringify(DEFAULT_DASHBOARDS));
 let activeFilter = 'all';
 let activeSearchQuery = '';
@@ -312,22 +312,26 @@ function loadDashboardContent(dash) {
         if (loader) loader.classList.remove('hidden');
 
         clearTimeout(iframe._loadTimeout);
+
         iframe.onload = () => {
             clearTimeout(iframe._loadTimeout);
-            setTimeout(() => {
-                if (loader) loader.classList.add('hidden');
-            }, 1200);
+            if (loader) loader.classList.add('hidden');
         };
 
-        iframe.onerror = () => renderEmbedError(dash);
+        iframe.onerror = () => {
+            if (loader) loader.classList.add('hidden');
+            renderEmbedError(dash);
+        };
 
+        // Usa exatamente a URL de incorporação gerada pelo Looker Studio.
         iframe.src = embedUrl;
 
+        // O onload de um iframe pode disparar mesmo quando o conteúdo interno
+        // apresenta uma tela vazia. Portanto, não escondemos o dashboard por
+        // timeout nem transformamos um carregamento lento em falso erro.
         iframe._loadTimeout = setTimeout(() => {
-            if (loader && !loader.classList.contains('hidden')) {
-                renderEmbedError(dash);
-            }
-        }, 12000);
+            if (loader) loader.classList.add('hidden');
+        }, 15000);
     }
 }
 
