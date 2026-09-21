@@ -18,7 +18,7 @@ const DEFAULT_DASHBOARDS = [
         platform: 'Looker Studio',
         description: 'Visão consolidada da frota, relatos diários por coordenador e status das operações de pátios.',
         // URL ATUALIZADA ABAIXO:
-        url: 'https://lookerstudio.google.com/embed/reporting/0a73ea85-2c22-406a-be24-3fa8499ec434/page/rcG7F',
+        url: 'https://datastudio.google.com/embed/reporting/0a73ea85-2c22-406a-be24-3fa8499ec434/page/rcG7F',
         icon: 'truck',
         badge: 'Principal',
         kpis: {
