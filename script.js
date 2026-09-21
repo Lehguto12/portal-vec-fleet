@@ -90,7 +90,8 @@ const DEFAULT_DASHBOARDS = [
     }
 ];
 
-let dashboardsData = JSON.parse(localStorage.getItem('vec_dashboards')) || DEFAULT_DASHBOARDS;
+const DASHBOARDS_STORAGE_KEY = 'vec_dashboards_v2';
+let dashboardsData = JSON.parse(localStorage.getItem(DASHBOARDS_STORAGE_KEY)) || JSON.parse(JSON.stringify(DEFAULT_DASHBOARDS));
 let activeFilter = 'all';
 let activeSearchQuery = '';
 let currentDashboardId = null;
@@ -313,6 +314,57 @@ function loadDashboardContent(dash) {
     }
 }
 
+function normalizeLookerEmbedUrl(url) {
+    if (!url) return '';
+    try {
+        const parsed = new URL(url);
+        if (parsed.hostname === 'datastudio.google.com' && parsed.pathname.startsWith('/embed/')) {
+            return parsed.toString();
+        }
+        if (parsed.hostname === 'lookerstudio.google.com' && parsed.pathname.startsWith('/embed/')) {
+            return parsed.toString();
+        }
+        return url;
+    } catch (e) {
+        return url;
+    }
+}
+
+function renderEmbedError(dash) {
+    const wrapper = document.getElementById('embed-wrapper');
+    const iframe = document.getElementById('main-iframe');
+    const loader = document.getElementById('iframe-loader');
+    if (loader) loader.classList.add('hidden');
+    if (iframe) iframe.classList.add('hidden');
+
+    let error = document.getElementById('embed-error');
+    if (!error) {
+        error = document.createElement('div');
+        error.id = 'embed-error';
+        error.className = 'absolute inset-0 bg-slate-950 flex flex-col items-center justify-center p-8 text-center';
+        wrapper.appendChild(error);
+    }
+
+    error.innerHTML = `
+        <div class="max-w-lg space-y-4">
+            <div class="mx-auto w-14 h-14 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+                <i data-lucide="triangle-alert" class="w-7 h-7 text-red-400"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white">Não foi possível carregar o dashboard</h3>
+            <p class="text-xs text-slate-400">
+                O portal conseguiu abrir o iframe, mas o Google Looker Studio não retornou o relatório.
+                Verifique o compartilhamento do relatório e se este é exatamente o URL gerado em
+                <b>Arquivo → Incorporar relatório → Embed URL</b>.
+            </p>
+            <div class="flex justify-center gap-2">
+                <button onclick="refreshIframe()" class="px-4 py-2 bg-amber-500 text-black font-bold rounded-xl text-xs">Tentar novamente</button>
+                <button onclick="openExternalUrl()" class="px-4 py-2 bg-slate-800 text-slate-200 font-semibold rounded-xl text-xs border border-dark-border">Abrir no Google</button>
+            </div>
+        </div>`;
+
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
 function renderLocalFallbackNotice(dash) {
     const simBoard = document.getElementById('simulated-board-content');
     if (!simBoard) return;
@@ -514,7 +566,7 @@ function setupEventListeners() {
                 }
             });
 
-            localStorage.setItem('vec_dashboards', JSON.stringify(dashboardsData));
+            localStorage.setItem(DASHBOARDS_STORAGE_KEY, JSON.stringify(dashboardsData));
             showToast('URLs dos relatórios salvas com sucesso!');
             closeConfigModal();
 
@@ -564,7 +616,7 @@ function closeConfigModal() {
 
 function resetDefaultUrls() {
     dashboardsData = JSON.parse(JSON.stringify(DEFAULT_DASHBOARDS));
-    localStorage.removeItem('vec_dashboards');
+    localStorage.removeItem(DASHBOARDS_STORAGE_KEY);
     showToast('URLs restauradas para as configurações padrão.');
     openConfigModal();
 }
