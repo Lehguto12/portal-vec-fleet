@@ -90,7 +90,7 @@ const DEFAULT_DASHBOARDS = [
     }
 ];
 
-const DASHBOARDS_STORAGE_KEY = 'vec_dashboards_v2';
+const DASHBOARDS_STORAGE_KEY = 'vec_dashboards_v3';
 let dashboardsData = JSON.parse(localStorage.getItem(DASHBOARDS_STORAGE_KEY)) || JSON.parse(JSON.stringify(DEFAULT_DASHBOARDS));
 let activeFilter = 'all';
 let activeSearchQuery = '';
@@ -307,10 +307,27 @@ function loadDashboardContent(dash) {
         iframe.classList.remove('hidden');
         if (loader) loader.classList.remove('hidden');
 
-        iframe.src = dash.url;
+        const embedUrl = normalizeLookerEmbedUrl(dash.url);
+
+        if (loader) loader.classList.remove('hidden');
+
+        clearTimeout(iframe._loadTimeout);
         iframe.onload = () => {
-            if (loader) loader.classList.add('hidden');
+            clearTimeout(iframe._loadTimeout);
+            setTimeout(() => {
+                if (loader) loader.classList.add('hidden');
+            }, 1200);
         };
+
+        iframe.onerror = () => renderEmbedError(dash);
+
+        iframe.src = embedUrl;
+
+        iframe._loadTimeout = setTimeout(() => {
+            if (loader && !loader.classList.contains('hidden')) {
+                renderEmbedError(dash);
+            }
+        }, 12000);
     }
 }
 
