@@ -511,7 +511,10 @@ function setDashboardZoom(level) {
     // o viewport do iframe. Em vez disso, aumentamos o iframe na proporção
     // inversa e aplicamos scale. Assim 80%/60% mostram mais conteúdo sem
     // criar uma segunda rolagem vertical para alcançar o restante.
-    const scale = percentage / 100;
+    // No modo 80%, o dashboard fica um pouco maior visualmente,
+    // mas a janela externa permanece exatamente com o mesmo tamanho.
+    // Isso aumenta somente o conteúdo do Looker para a direita e para baixo.
+    const scale = percentage === 80 ? 0.86 : percentage / 100;
     const inverseSize = 100 / scale;
 
     zoomContainer.style.position = 'relative';
