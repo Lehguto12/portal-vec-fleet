@@ -419,9 +419,9 @@ textarea:focus-visible {
 
 /* Ajuste visual solicitado: janela do dashboard mais larga */
 #embed-wrapper {
-    width: 90% !important;
-    height: calc(100vh - 170px) !important;
-    min-height: 650px !important;
+    width: 94% !important;
+    height: calc(100vh - 210px) !important;
+    min-height: 520px !important;
 }
 
 /* Cabeçalho principal na identidade amarela DHL */
