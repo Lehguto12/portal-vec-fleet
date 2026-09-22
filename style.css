@@ -579,3 +579,31 @@ header .text-amber-400 {
     cursor: pointer !important;
     pointer-events: auto !important;
 }
+
+
+/* =========================================================
+   DASHBOARD - AJUSTE FINAL DE ENQUADRAMENTO
+   O tamanho visual é controlado pelo JavaScript.
+   ========================================================= */
+#embed-wrapper {
+    width: 100% !important;
+    transform: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    overflow: hidden !important;
+}
+
+#embed-wrapper #dashboard-zoom-container {
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    transform: none !important;
+}
+
+#embed-wrapper #main-iframe {
+    max-width: none !important;
+    max-height: none !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    transform-origin: top left !important;
+}
