@@ -584,12 +584,13 @@ function positionZoomMenu() {
     }
 
     menu.style.position = 'fixed';
-    menu.style.top = top + 'px';
-    menu.style.left = left + 'px';
-    menu.style.right = 'auto';
-    menu.style.bottom = 'auto';
-    menu.style.zIndex = '2147483647';
-    menu.style.margin = '0';
+    menu.style.setProperty('top', top + 'px', 'important');
+    menu.style.setProperty('left', left + 'px', 'important');
+    menu.style.setProperty('right', 'auto', 'important');
+    menu.style.setProperty('bottom', 'auto', 'important');
+    menu.style.setProperty('position', 'fixed', 'important');
+    menu.style.setProperty('z-index', '2147483647', 'important');
+    menu.style.setProperty('margin', '0', 'important');
 }function toggleZoomMenu(event) {
     if (event) {
         event.preventDefault();
@@ -667,7 +668,10 @@ function setupEventListeners() {
 
             if (zoomMenu.classList.contains('hidden')) {
                 zoomMenu.classList.remove('hidden');
-                requestAnimationFrame(positionZoomMenu);
+                requestAnimationFrame(() => {
+                    positionZoomMenu();
+                    requestAnimationFrame(positionZoomMenu);
+                });
             } else {
                 zoomMenu.classList.add('hidden');
             }
