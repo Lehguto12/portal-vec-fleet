@@ -417,6 +417,56 @@ textarea:focus-visible {
 }
 
 
+/* Ajuste visual solicitado: janela do dashboard mais larga */
+#embed-wrapper {
+    width: 90% !important;
+}
+
+/* Cabeçalho principal na identidade amarela DHL */
+header {
+    background-color: var(--dhl-yellow) !important;
+    border-color: var(--dhl-yellow-dark) !important;
+    color: #111827 !important;
+}
+
+header .text-slate-200,
+header .text-slate-300,
+header .text-slate-400,
+header .text-slate-500 {
+    color: #111827 !important;
+}
+
+header button {
+    color: #111827 !important;
+}
+
+header button:hover {
+    color: #111827 !important;
+    background-color: rgba(255,255,255,0.22) !important;
+}
+
+header .bg-dark-hover,
+header .bg-slate-900\/60 {
+    background-color: rgba(255,255,255,0.28) !important;
+}
+
+header input {
+    color: #111827 !important;
+    border-color: rgba(17,24,39,0.25) !important;
+}
+
+header input::placeholder {
+    color: #374151 !important;
+}
+
+header .border-dark-border {
+    border-color: rgba(17,24,39,0.25) !important;
+}
+
+header .text-amber-400 {
+    color: var(--dhl-red) !important;
+}
+
 /* Ajuste fino: controles e dashboard um pouco mais para cima */
 #dashboard-zoom-details {
     transform: translateY(-5px) !important;
