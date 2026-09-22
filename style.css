@@ -394,3 +394,17 @@ textarea:focus-visible {
 #embed-wrapper #main-iframe {
     width: 100% !important;
 }
+
+
+/* TESTE: dashboard interno em 60% */
+#embed-wrapper #dashboard-zoom-container #main-iframe {
+    width: 60% !important;
+    height: 60% !important;
+    min-height: 0 !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    zoom: 1 !important;
+}
