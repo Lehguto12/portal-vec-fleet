@@ -499,28 +499,28 @@ function refreshIframe() {
 
 function setDashboardZoom(level) {
     const iframe = document.getElementById('main-iframe');
-    const container = document.getElementById('dashboard-zoom-container');
     const button = document.getElementById('fit-screen-btn');
-    if (!iframe || !container) return;
+    const wrapper = document.getElementById('embed-wrapper');
+    if (!iframe || !wrapper) return;
 
     const scale = Number(level) / 100;
 
-    // Mantém o iframe com um viewport proporcionalmente maior
-    // e reduz apenas o conjunto visual. Não usa zoom no iframe.
-    container.style.width = (100 / scale) + '%';
-    container.style.height = (100 / scale) + '%';
-    container.style.transform = 'scale(' + scale + ')';
-    container.style.transformOrigin = 'top left';
-
-    iframe.style.width = '100%';
-    iframe.style.height = '100%';
+    // O iframe ocupa um viewport maior e é reduzido visualmente.
+    // Isso funciona sem tentar acessar o conteúdo interno do Looker Studio.
+    iframe.style.position = 'absolute';
+    iframe.style.top = '0';
+    iframe.style.left = '0';
+    iframe.style.width = (100 / scale) + '%';
+    iframe.style.height = (100 / scale) + '%';
+    iframe.style.minHeight = '0';
+    iframe.style.transform = 'scale(' + scale + ')';
+    iframe.style.transformOrigin = 'top left';
     iframe.style.zoom = '1';
-    iframe.style.transform = 'none';
 
     iframe.dataset.zoomLevel = String(level);
 
     if (button) {
-        button.title = 'Tamanho do dashboard: ' + level + '%';
+        button.title = 'Zoom: ' + level + '% — clique para alterar';
         button.classList.toggle('bg-amber-500', level !== 100);
         button.classList.toggle('text-black', level !== 100);
         button.classList.toggle('bg-slate-900', level === 100);
@@ -539,6 +539,17 @@ function setDashboardZoom(level) {
     }
 }
 
+function toggleDashboardZoom(event) {
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    const iframe = document.getElementById('main-iframe');
+    const current = Number(iframe?.dataset.zoomLevel || 100);
+    const next = current === 100 ? 80 : current === 80 ? 60 : 100;
+    setDashboardZoom(next);
+}
+
 function openZoomMenu(event) {
     if (event) {
         event.preventDefault();
@@ -546,7 +557,7 @@ function openZoomMenu(event) {
     }
     const menu = document.getElementById('dashboard-zoom-menu');
     if (!menu) return;
-    menu.style.display = 'block';
+    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
 }
 
 function selectDashboardZoom(level, event) {
@@ -560,19 +571,8 @@ function selectDashboardZoom(level, event) {
 }
 
 function toggleFitToScreen() {
-    const iframe = document.getElementById('main-iframe');
-    const current = Number(iframe?.dataset.zoomLevel || 100);
-    const next = current === 100 ? 80 : current === 80 ? 60 : 100;
-    setDashboardZoom(next);
+    toggleDashboardZoom();
 }
-
-document.addEventListener('click', (event) => {
-    const menu = document.getElementById('dashboard-zoom-menu');
-    const button = document.getElementById('fit-screen-btn');
-    if (menu && button && !menu.contains(event.target) && !button.contains(event.target)) {
-        menu.style.display = 'none';
-    }
-});
 
 function toggleFullscreen() {
     const elem = document.getElementById('embed-wrapper');
