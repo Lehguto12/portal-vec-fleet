@@ -501,19 +501,25 @@ function setDashboardZoom(level) {
     const iframe = document.getElementById('main-iframe');
     const container = document.getElementById('dashboard-zoom-container');
     const button = document.getElementById('fit-screen-btn');
+    const menu = document.getElementById('dashboard-zoom-menu');
+
     if (!iframe || !container) return;
 
     const scale = Number(level) / 100;
 
-    // Zoom visual real: 80% e 60% deixam o conteúdo menor,
-    // permitindo enxergar uma área maior do dashboard.
-    container.style.width = '100%';
-    container.style.height = '100%';
-    container.style.transform = 'none';
+    // O Looker Studio está dentro de um iframe de outro domínio.
+    // Por isso, não tentamos alterar o zoom interno do Looker.
+    // Em vez disso, aumentamos o viewport do iframe e reduzimos
+    // visualmente o conjunto. Assim 80%/60% realmente mostram
+    // uma área maior do dashboard.
+    container.style.width = (100 / scale) + '%';
+    container.style.height = (100 / scale) + '%';
+    container.style.transform = 'scale(' + scale + ')';
+    container.style.transformOrigin = 'top left';
 
     iframe.style.width = '100%';
     iframe.style.height = '100%';
-    iframe.style.zoom = String(scale);
+    iframe.style.zoom = '';
     iframe.style.transform = 'none';
     iframe.style.transformOrigin = 'top left';
 
@@ -528,9 +534,9 @@ function setDashboardZoom(level) {
         button.classList.toggle('text-slate-400', level === 100);
     }
 
-    document.querySelectorAll('.dashboard-zoom-option').forEach(btn => {
-        btn.classList.remove('bg-amber-500', 'text-black', 'font-bold');
-        btn.classList.add('text-slate-300');
+    document.querySelectorAll('.dashboard-zoom-option').forEach(option => {
+        option.classList.remove('bg-amber-500', 'text-black', 'font-bold');
+        option.classList.add('text-slate-300');
     });
 
     const active = document.querySelector('[data-zoom="' + level + '"]');
@@ -538,10 +544,15 @@ function setDashboardZoom(level) {
         active.classList.remove('text-slate-300');
         active.classList.add('bg-amber-500', 'text-black', 'font-bold');
     }
+
+    if (menu) {
+        menu.style.display = 'none';
+    }
 }
 
 function toggleFitToScreen() {
-    const current = Number(document.getElementById('main-iframe')?.dataset.zoomLevel || 100);
+    const iframe = document.getElementById('main-iframe');
+    const current = Number(iframe?.dataset.zoomLevel || 100);
     const next = current === 100 ? 80 : current === 80 ? 60 : 100;
     setDashboardZoom(next);
 }
@@ -549,14 +560,17 @@ function toggleFitToScreen() {
 function toggleZoomMenu(event) {
     const menu = document.getElementById('dashboard-zoom-menu');
     if (!menu) return;
+
     if (event) event.stopPropagation();
-    const opening = menu.style.display === 'none' || menu.style.display === '';
-    menu.style.display = opening ? 'block' : 'none';
+
+    const isOpen = menu.style.display === 'block';
+    menu.style.display = isOpen ? 'none' : 'block';
 }
 
 document.addEventListener('click', (event) => {
     const menu = document.getElementById('dashboard-zoom-menu');
     const button = document.getElementById('fit-screen-btn');
+
     if (menu && button && !menu.contains(event.target) && !button.contains(event.target)) {
         menu.style.display = 'none';
     }
