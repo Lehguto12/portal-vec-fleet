@@ -506,21 +506,14 @@ function setDashboardZoom(level) {
     const numericLevel = Number(level);
     const scale = numericLevel / 100;
 
-    /*
-     * O container continua com 100% do tamanho disponível.
-     * Somente o conteúdo é reduzido pelo transform.
-     *
-     * IMPORTANTE:
-     * Não aumentar width/height para 100/scale, pois isso cancela
-     * visualmente o zoom (ex.: 166.6% x 60% = 100%).
-     */
+    // O zoom é aplicado diretamente ao elemento iframe.
+    // Não usamos transform/width compensatório, porque isso pode
+    // neutralizar a escala visual.
     zoomContainer.style.position = 'absolute';
-    zoomContainer.style.top = '0';
-    zoomContainer.style.left = '0';
+    zoomContainer.style.inset = '0';
     zoomContainer.style.width = '100%';
     zoomContainer.style.height = '100%';
-    zoomContainer.style.transform = 'scale(' + scale + ')';
-    zoomContainer.style.transformOrigin = 'top left';
+    zoomContainer.style.transform = 'none';
 
     iframe.style.position = 'absolute';
     iframe.style.top = '0';
@@ -530,7 +523,10 @@ function setDashboardZoom(level) {
     iframe.style.minHeight = '0';
     iframe.style.transform = 'none';
     iframe.style.transformOrigin = 'top left';
-    iframe.style.zoom = '1';
+
+    // CSS zoom reduz o iframe de fato sem alterar o conteúdo interno
+    // do Looker Studio e sem depender de acesso ao conteúdo cross-origin.
+    iframe.style.zoom = String(scale);
 
     zoomContainer.dataset.zoomLevel = String(numericLevel);
     iframe.dataset.zoomLevel = String(numericLevel);
