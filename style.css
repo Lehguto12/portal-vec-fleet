@@ -365,3 +365,13 @@ textarea:focus-visible {
         height: 5px;
     }
 }
+
+
+/* TESTE TEMPORÁRIO: dashboard em 80% */
+#dashboard-zoom-container #main-iframe {
+    width: 80% !important;
+    height: 80% !important;
+    min-height: 0 !important;
+    transform: none !important;
+    zoom: 1 !important;
+}
