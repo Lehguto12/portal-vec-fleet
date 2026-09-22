@@ -499,25 +499,32 @@ function refreshIframe() {
 
 function setDashboardZoom(level) {
     const iframe = document.getElementById('main-iframe');
+    const container = document.getElementById('dashboard-zoom-container');
     const button = document.getElementById('fit-screen-btn');
-    if (!iframe) return;
+    if (!iframe || !container) return;
 
     const scale = Number(level) / 100;
 
-    iframe.style.zoom = scale === 1 ? '' : String(scale);
-    iframe.style.transform = 'none';
-    iframe.style.transformOrigin = 'top left';
-    iframe.style.width = scale === 1 ? '100%' : (100 / scale) + '%';
-    iframe.style.height = scale === 1 ? '100%' : (100 / scale) + '%';
+    // Aumenta o viewport real do Looker e depois reduz visualmente o conjunto.
+    // Assim, 80% e 60% realmente exibem mais conteúdo dentro da mesma área.
+    container.style.width = (100 / scale) + '%';
+    container.style.height = (100 / scale) + '%';
+    container.style.transform = 'scale(' + scale + ')';
+    container.style.transformOrigin = 'top left';
+
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    iframe.style.zoom = '';
+
     iframe.dataset.fitScreen = level === 100 ? 'false' : 'true';
     iframe.dataset.zoomLevel = String(level);
 
     if (button) {
+        button.title = 'Tamanho do dashboard: ' + level + '%';
         button.classList.toggle('bg-amber-500', level !== 100);
         button.classList.toggle('text-black', level !== 100);
         button.classList.toggle('bg-slate-900', level === 100);
         button.classList.toggle('text-slate-400', level === 100);
-        button.title = 'Zoom do dashboard: ' + level + '%';
     }
 
     document.querySelectorAll('.dashboard-zoom-option').forEach(btn => {
@@ -538,10 +545,22 @@ function toggleFitToScreen() {
     setDashboardZoom(next);
 }
 
-function toggleZoomMenu() {
+function toggleZoomMenu(event) {
     const menu = document.getElementById('dashboard-zoom-menu');
-    if (menu) menu.classList.toggle('hidden');
+    if (!menu) return;
+    if (event) event.stopPropagation();
+    const opening = menu.style.display === 'none' || menu.style.display === '';
+    menu.style.display = opening ? 'block' : 'none';
 }
+
+document.addEventListener('click', (event) => {
+    const menu = document.getElementById('dashboard-zoom-menu');
+    const button = document.getElementById('fit-screen-btn');
+    if (menu && button && !menu.contains(event.target) && !button.contains(event.target)) {
+        menu.style.display = 'none';
+    }
+});
+
 function toggleFullscreen() {
     const elem = document.getElementById('embed-wrapper');
     if (!elem) return;
