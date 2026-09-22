@@ -419,9 +419,9 @@ textarea:focus-visible {
 
 /* Ajuste visual solicitado: janela do dashboard mais larga */
 #embed-wrapper {
-    width: 94% !important;
-    height: calc(100vh - 210px) !important;
-    min-height: 520px !important;
+    width: 97% !important;
+    height: calc(100vh - 190px) !important;
+    min-height: 560px !important;
 }
 
 /* Cabeçalho principal na identidade amarela DHL */
@@ -512,8 +512,8 @@ header .text-amber-400 {
 
 #dashboard-zoom-menu {
     z-index: 1002 !important;
-    top: auto !important;
-    bottom: 42px !important;
+    top: 42px !important;
+    bottom: auto !important;
     right: 0 !important;
 }
 
