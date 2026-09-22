@@ -375,3 +375,19 @@ textarea:focus-visible {
     transform: none !important;
     zoom: 1 !important;
 }
+
+
+/* TESTE TEMPORÁRIO: reduzir a janela branca do dashboard */
+#embed-wrapper {
+    width: 80% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+#embed-wrapper #dashboard-zoom-container {
+    width: 100% !important;
+}
+
+#embed-wrapper #main-iframe {
+    width: 100% !important;
+}
