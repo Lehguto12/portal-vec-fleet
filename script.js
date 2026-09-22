@@ -505,16 +505,17 @@ function setDashboardZoom(level) {
 
     const scale = Number(level) / 100;
 
-    // Aumenta o viewport real do Looker e depois reduz visualmente o conjunto.
-    // Assim, 80% e 60% realmente exibem mais conteúdo dentro da mesma área.
-    container.style.width = (100 / scale) + '%';
-    container.style.height = (100 / scale) + '%';
-    container.style.transform = 'scale(' + scale + ')';
-    container.style.transformOrigin = 'top left';
+    // Zoom visual real: 80% e 60% deixam o conteúdo menor,
+    // permitindo enxergar uma área maior do dashboard.
+    container.style.width = '100%';
+    container.style.height = '100%';
+    container.style.transform = 'none';
 
     iframe.style.width = '100%';
     iframe.style.height = '100%';
-    iframe.style.zoom = '';
+    iframe.style.zoom = String(scale);
+    iframe.style.transform = 'none';
+    iframe.style.transformOrigin = 'top left';
 
     iframe.dataset.fitScreen = level === 100 ? 'false' : 'true';
     iframe.dataset.zoomLevel = String(level);
