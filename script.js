@@ -559,13 +559,37 @@ function toggleDashboardZoom(event) {
     setDashboardZoom(next);
 }
 
+function positionZoomMenu() {
+    const details = document.getElementById('dashboard-zoom-details');
+    const summary = document.getElementById('fit-screen-btn');
+    const menu = document.getElementById('dashboard-zoom-menu');
+    if (!details || !summary || !menu || !details.open) return;
+
+    const rect = summary.getBoundingClientRect();
+    const menuWidth = menu.offsetWidth || 200;
+    const left = Math.max(8, Math.min(
+        window.innerWidth - menuWidth - 8,
+        rect.right - menuWidth
+    ));
+
+    // Fixo na tela: impede que o navegador/stacking context faça o menu subir.
+    menu.style.setProperty('position', 'fixed', 'important');
+    menu.style.setProperty('top', (rect.bottom + 8) + 'px', 'important');
+    menu.style.setProperty('left', left + 'px', 'important');
+    menu.style.setProperty('right', 'auto', 'important');
+    menu.style.setProperty('bottom', 'auto', 'important');
+}
+
 function openZoomMenu(event) {
     if (event) {
         event.preventDefault();
         event.stopPropagation();
     }
     const details = document.getElementById('dashboard-zoom-details');
-    if (details) details.open = !details.open;
+    if (details) {
+        details.open = !details.open;
+        if (details.open) requestAnimationFrame(positionZoomMenu);
+    }
 }
 
 function selectDashboardZoom(level, event) {
@@ -610,6 +634,22 @@ function openExternalUrl() {
    --------------------------------------------------------- */
 
 function setupEventListeners() {
+
+    /* --- MENU DE ZOOM DO DASHBOARD --- */
+    const zoomDetails = document.getElementById('dashboard-zoom-details');
+    if (zoomDetails) {
+        zoomDetails.addEventListener('toggle', () => {
+            if (zoomDetails.open) requestAnimationFrame(positionZoomMenu);
+        });
+    }
+
+    window.addEventListener('resize', () => {
+        if (zoomDetails?.open) positionZoomMenu();
+    });
+
+    document.getElementById('content-area')?.addEventListener('scroll', () => {
+        if (zoomDetails?.open) positionZoomMenu();
+    }, { passive: true });
 
     /* --- FILTROS DE CATEGORIA --- */
     const categoryContainer = document.getElementById('category-filters');
