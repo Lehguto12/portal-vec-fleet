@@ -101,14 +101,16 @@
                             <button onclick="refreshIframe()" title="Atualizar Painel" class="p-2 rounded-lg bg-slate-900 border border-dark-border text-slate-400 hover:text-white hover:bg-dark-hover transition"><i data-lucide="rotate-cw" class="w-4 h-4"></i></button>
                             
                             
-                            <button id="fit-screen-btn" type="button" title="Ajustar tamanho do dashboard" class="p-2 rounded-lg bg-slate-900 border border-dark-border text-slate-400 hover:text-white hover:bg-dark-hover transition flex items-center justify-center">
-                                <i data-lucide="scan" class="w-4 h-4"></i>
-                            </button>
-                            <div id="dashboard-zoom-menu" class="hidden bg-dark-card border border-dark-border rounded-xl p-1.5 shadow-2xl min-w-[200px]">
+                            <div id="zoom-control-wrapper" class="relative flex items-center">
+                                <button id="fit-screen-btn" type="button" title="Ajustar tamanho do dashboard" class="p-2 rounded-lg bg-slate-900 border border-dark-border text-slate-400 hover:text-white hover:bg-dark-hover transition flex items-center justify-center">
+                                    <i data-lucide="scan" class="w-4 h-4"></i>
+                                </button>
+                                <div id="dashboard-zoom-menu" class="hidden absolute right-0 top-full mt-2 bg-dark-card border border-dark-border rounded-xl p-1.5 shadow-2xl min-w-[200px] z-[9999]">
                                 <div class="px-2.5 py-1.5 text-[10px] uppercase tracking-wider text-slate-500 font-bold">Ajustar dashboard</div>
                                 <button type="button" onclick="selectDashboardZoom(100, event)" data-zoom="100" class="dashboard-zoom-option w-full text-left px-2.5 py-2 rounded-lg text-[11px] bg-amber-500 text-black font-bold hover:bg-amber-400">100% — Normal</button>
                                 <button type="button" onclick="selectDashboardZoom(80, event)" data-zoom="80" class="dashboard-zoom-option w-full text-left px-2.5 py-2 rounded-lg text-[11px] text-slate-300 hover:bg-dark-hover">80% — Mais conteúdo</button>
                                 <button type="button" onclick="selectDashboardZoom(60, event)" data-zoom="60" class="dashboard-zoom-option w-full text-left px-2.5 py-2 rounded-lg text-[11px] text-slate-300 hover:bg-dark-hover">60% — Máximo conteúdo</button>
+                                </div>
                             </div>
                             <button onclick="toggleFullscreen()" title="Modo Tela Cheia" class="p-2 rounded-lg bg-slate-900 border border-dark-border text-slate-400 hover:text-white hover:bg-dark-hover transition"><i data-lucide="maximize-2" class="w-4 h-4"></i></button>
                             <button onclick="openExternalUrl()" title="Abrir em Nova Aba no Looker" class="p-2 rounded-lg bg-slate-900 border border-dark-border text-slate-400 hover:text-white hover:bg-dark-hover transition"><i data-lucide="external-link" class="w-4 h-4"></i></button>
