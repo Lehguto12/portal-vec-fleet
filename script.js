@@ -500,13 +500,12 @@ function refreshIframe() {
 function setDashboardZoom(level) {
     const iframe = document.getElementById('main-iframe');
     const button = document.getElementById('fit-screen-btn');
-    const wrapper = document.getElementById('embed-wrapper');
-    if (!iframe || !wrapper) return;
+    if (!iframe) return;
 
     const scale = Number(level) / 100;
 
-    // O iframe ocupa um viewport maior e é reduzido visualmente.
-    // Isso funciona sem tentar acessar o conteúdo interno do Looker Studio.
+    // Escala diretamente o iframe. O viewport interno fica maior,
+    // permitindo que o Looker mostre mais conteúdo em 80%/60%.
     iframe.style.position = 'absolute';
     iframe.style.top = '0';
     iframe.style.left = '0';
@@ -520,7 +519,7 @@ function setDashboardZoom(level) {
     iframe.dataset.zoomLevel = String(level);
 
     if (button) {
-        button.title = 'Zoom: ' + level + '% — clique para alterar';
+        button.title = 'Ajustar tamanho — atual: ' + level + '%';
         button.classList.toggle('bg-amber-500', level !== 100);
         button.classList.toggle('text-black', level !== 100);
         button.classList.toggle('bg-slate-900', level === 100);
@@ -555,9 +554,8 @@ function openZoomMenu(event) {
         event.preventDefault();
         event.stopPropagation();
     }
-    const menu = document.getElementById('dashboard-zoom-menu');
-    if (!menu) return;
-    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    const details = document.getElementById('dashboard-zoom-details');
+    if (details) details.open = !details.open;
 }
 
 function selectDashboardZoom(level, event) {
@@ -565,9 +563,12 @@ function selectDashboardZoom(level, event) {
         event.preventDefault();
         event.stopPropagation();
     }
+
     setDashboardZoom(level);
-    const menu = document.getElementById('dashboard-zoom-menu');
-    if (menu) menu.style.display = 'none';
+
+    // Fecha o <details> corretamente; não esconde o menu via display:none.
+    const details = document.getElementById('dashboard-zoom-details');
+    if (details) details.open = false;
 }
 
 function toggleFitToScreen() {
