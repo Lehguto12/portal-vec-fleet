@@ -517,6 +517,7 @@ header .text-amber-400 {
     left: 0 !important;
     right: auto !important;
     bottom: auto !important;
+    margin: 0 !important;
 }
 
 #embed-wrapper {
