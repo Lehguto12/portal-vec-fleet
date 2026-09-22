@@ -486,6 +486,39 @@ header .text-amber-400 {
 }
 
 
+/* Corrigir camada e alinhamento do cabeçalho do dashboard */
+#view-viewer > div.bg-dark-card.border.border-dark-border.rounded-xl {
+    position: relative !important;
+    z-index: 1000 !important;
+    transform: translateY(-12px) !important;
+}
+
+#dashboard-zoom-details {
+    position: relative !important;
+    z-index: 1001 !important;
+    align-self: center !important;
+    transform: none !important;
+    margin: 0 !important;
+}
+
+#dashboard-zoom-details > summary {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 32px !important;
+    height: 32px !important;
+    box-sizing: border-box !important;
+}
+
+#dashboard-zoom-menu {
+    z-index: 1002 !important;
+}
+
+#embed-wrapper {
+    position: relative !important;
+    z-index: 1 !important;
+}
+
 /* Subir somente o cabeçalho do dashboard */
 #view-viewer > div.bg-dark-card.border.border-dark-border.rounded-xl {
     transform: translateY(-12px) !important;
