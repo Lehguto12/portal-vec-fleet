@@ -109,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (zoomMenu && zoomMenu.parentElement !== document.body) {
         document.body.appendChild(zoomMenu);
     }
+    if (zoomMenu) zoomMenu.classList.add('hidden');
 
     setupClock();
     renderSidebarList();
@@ -565,12 +566,11 @@ function toggleDashboardZoom(event) {
 }
 
 function positionZoomMenu() {
-    const details = document.getElementById('dashboard-zoom-details');
-    const summary = document.getElementById('fit-screen-btn');
+    const button = document.getElementById('fit-screen-btn');
     const menu = document.getElementById('dashboard-zoom-menu');
-    if (!details || !summary || !menu || !details.open) return;
+    if (!button || !menu || menu.classList.contains('hidden')) return;
 
-    const rect = summary.getBoundingClientRect();
+    const rect = button.getBoundingClientRect();
     const menuWidth = menu.offsetWidth || 200;
     const menuHeight = menu.offsetHeight || 140;
     const gap = 8;
@@ -578,35 +578,39 @@ function positionZoomMenu() {
     let left = rect.right - menuWidth;
     left = Math.max(8, Math.min(window.innerWidth - menuWidth - 8, left));
 
-    // O menu está diretamente no body, fora do cabeçalho transformado.
-    // Portanto position:fixed usa a viewport real e fica alinhado ao botão.
     let top = rect.bottom + gap;
-
-    // Nunca troca para cima: se faltar espaço, apenas mantém o menu
-    // dentro da viewport pela parte inferior.
     if (top + menuHeight > window.innerHeight - 8) {
         top = Math.max(8, window.innerHeight - menuHeight - 8);
     }
 
-    menu.style.setProperty('position', 'fixed', 'important');
-    menu.style.setProperty('top', top + 'px', 'important');
-    menu.style.setProperty('left', left + 'px', 'important');
-    menu.style.setProperty('right', 'auto', 'important');
-    menu.style.setProperty('bottom', 'auto', 'important');
-    menu.style.setProperty('margin', '0', 'important');
-}
-function openZoomMenu(event) {
+    menu.style.position = 'fixed';
+    menu.style.top = top + 'px';
+    menu.style.left = left + 'px';
+    menu.style.right = 'auto';
+    menu.style.bottom = 'auto';
+    menu.style.zIndex = '2147483647';
+    menu.style.margin = '0';
+}function toggleZoomMenu(event) {
     if (event) {
         event.preventDefault();
         event.stopPropagation();
     }
-    const details = document.getElementById('dashboard-zoom-details');
-    if (details) {
-        details.open = !details.open;
-        if (details.open) requestAnimationFrame(positionZoomMenu);
+
+    const menu = document.getElementById('dashboard-zoom-menu');
+    if (!menu) return;
+
+    const willOpen = menu.classList.contains('hidden');
+    if (willOpen) {
+        menu.classList.remove('hidden');
+        requestAnimationFrame(positionZoomMenu);
+    } else {
+        menu.classList.add('hidden');
     }
 }
 
+function openZoomMenu(event) {
+    toggleZoomMenu(event);
+}
 function selectDashboardZoom(level, event) {
     if (event) {
         event.preventDefault();
@@ -616,8 +620,8 @@ function selectDashboardZoom(level, event) {
     setDashboardZoom(level);
 
     // Fecha o <details> corretamente; não esconde o menu via display:none.
-    const details = document.getElementById('dashboard-zoom-details');
-    if (details) details.open = false;
+    const menu = document.getElementById('dashboard-zoom-menu');
+    if (menu) menu.classList.add('hidden');
 }
 
 function toggleFitToScreen() {
@@ -651,20 +655,26 @@ function openExternalUrl() {
 function setupEventListeners() {
 
     /* --- MENU DE ZOOM DO DASHBOARD --- */
-    const zoomDetails = document.getElementById('dashboard-zoom-details');
-    if (zoomDetails) {
-        zoomDetails.addEventListener('toggle', () => {
-            if (zoomDetails.open) requestAnimationFrame(positionZoomMenu);
-        });
-    }
+    const zoomButton = document.getElementById('fit-screen-btn');
+    const zoomMenu = document.getElementById('dashboard-zoom-menu');
+
+    document.addEventListener('click', (event) => {
+        if (!zoomMenu || zoomMenu.classList.contains('hidden')) return;
+        if (event.target === zoomButton || zoomButton?.contains(event.target) || zoomMenu.contains(event.target)) return;
+        zoomMenu.classList.add('hidden');
+    });
 
     window.addEventListener('resize', () => {
-        if (zoomDetails?.open) positionZoomMenu();
+        if (zoomMenu && !zoomMenu.classList.contains('hidden')) positionZoomMenu();
     });
 
     document.getElementById('content-area')?.addEventListener('scroll', () => {
-        if (zoomDetails?.open) positionZoomMenu();
+        if (zoomMenu && !zoomMenu.classList.contains('hidden')) positionZoomMenu();
     }, { passive: true });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && zoomMenu) zoomMenu.classList.add('hidden');
+    });
 
     /* --- FILTROS DE CATEGORIA --- */
     const categoryContainer = document.getElementById('category-filters');
