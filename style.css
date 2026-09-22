@@ -715,3 +715,13 @@ body.dashboard-view-active #view-viewer > div.bg-dark-card.border.border-dark-bo
     transform: none !important;
     margin-top: 0 !important;
 }
+
+/* AJUSTE FINAL: sobe somente a barra vermelha e preserva a posição do dashboard */
+body.dashboard-view-active #view-viewer > div.bg-dark-card.border.border-dark-border.rounded-xl {
+    position: relative !important;
+    top: auto !important;
+    transform: none !important;
+    margin-top: -16px !important;
+    margin-bottom: 16px !important;
+    z-index: 1000 !important;
+}
