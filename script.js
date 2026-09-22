@@ -507,21 +507,16 @@ function setDashboardZoom(level) {
     const numericLevel = Number(level);
     const percentage = Math.max(1, Math.min(100, numericLevel));
 
-    // Para mostrar o dashboard inteiro dentro da mesma área, não reduzimos
-    // o viewport do iframe. Em vez disso, aumentamos o iframe na proporção
-    // inversa e aplicamos scale. Assim 80%/60% mostram mais conteúdo sem
-    // criar uma segunda rolagem vertical para alcançar o restante.
-    // No modo 80%, o dashboard fica um pouco maior visualmente,
-    // mas a janela externa permanece exatamente com o mesmo tamanho.
-    // Isso aumenta somente o conteúdo do Looker para a direita e para baixo.
-    const scale = percentage === 80 ? 0.86 : percentage / 100;
-    const inverseSize = 100 / scale;
-
     zoomContainer.style.position = 'relative';
     zoomContainer.style.overflow = 'hidden';
     zoomContainer.style.width = '100%';
     zoomContainer.style.height = '100%';
     zoomContainer.style.transform = 'none';
+
+    // 100% = o dashboard ocupa exatamente toda a janela que o envolve.
+    // 80%/60% = reduzimos somente o conteúdo interno, mantendo a janela externa.
+    const scale = percentage / 100;
+    const inverseSize = 100 / scale;
 
     iframe.style.setProperty('position', 'absolute', 'important');
     iframe.style.setProperty('top', '0', 'important');
@@ -530,10 +525,14 @@ function setDashboardZoom(level) {
     iframe.style.setProperty('bottom', 'auto', 'important');
     iframe.style.setProperty('width', inverseSize + '%', 'important');
     iframe.style.setProperty('height', inverseSize + '%', 'important');
+    iframe.style.setProperty('min-width', '0', 'important');
     iframe.style.setProperty('min-height', '0', 'important');
+    iframe.style.setProperty('max-width', 'none', 'important');
+    iframe.style.setProperty('max-height', 'none', 'important');
     iframe.style.setProperty('transform-origin', 'top left', 'important');
     iframe.style.setProperty('transform', 'scale(' + scale + ')', 'important');
     iframe.style.setProperty('zoom', '1', 'important');
+
     iframe.dataset.zoomLevel = String(percentage);
     zoomContainer.dataset.zoomLevel = String(percentage);
 
@@ -556,7 +555,6 @@ function setDashboardZoom(level) {
         active.classList.add('bg-amber-500', 'text-black', 'font-bold');
     }
 }
-
 function toggleDashboardZoom(event) {
     if (event) {
         event.preventDefault();
