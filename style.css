@@ -690,3 +690,11 @@ body.dashboard-view-active #embed-wrapper {
     top: -12px !important;
     margin-top: 0 !important;
 }
+
+/* POSIÇÃO DA BARRA SUPERIOR DO DASHBOARD */
+#view-viewer > div.bg-dark-card.border.border-dark-border.rounded-xl {
+    position: relative !important;
+    top: 0 !important;
+    transform: translateY(-24px) !important;
+    margin-top: 0 !important;
+}
