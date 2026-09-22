@@ -94,7 +94,13 @@
                 <div id="view-viewer" class="hidden space-y-3 min-h-0">
                     <div class="bg-dark-card border border-dark-border rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 shadow-md">
                         <div class="flex items-center space-x-3"><button onclick="navigateTo('hub')" class="p-2 rounded-lg bg-slate-900 border border-dark-border text-slate-300 hover:text-white hover:bg-dark-hover transition flex items-center text-xs font-semibold"><i data-lucide="arrow-left" class="w-4 h-4 mr-1.5"></i> Central</button><div class="h-5 w-px bg-dark-border"></div>
-<details id="dashboard-zoom-details" class="relative">
+<div><div class="flex items-center space-x-2"><h2 id="viewer-title" class="text-sm font-bold text-white">---</h2><span id="viewer-platform-tag" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">---</span></div><span id="viewer-status" class="text-[10px] text-slate-400 flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5"></span> Dados Integrados</span></div></div>
+                        <div class="flex items-center space-x-2">
+                            <select id="viewer-select" onchange="switchViewerDashboard(this.value)" class="bg-slate-900 border border-dark-border text-xs rounded-lg px-3 py-1.5 text-slate-200 focus:outline-none focus:border-amber-500"></select>
+                            <div class="flex bg-slate-900 p-1 rounded-lg border border-dark-border"><button id="btn-mode-embed" onclick="toggleViewerDisplayMode('embed')" class="px-2.5 py-1 text-[11px] font-bold rounded-md bg-amber-500 text-black transition">Iframe Looker</button><button id="btn-mode-sim" onclick="toggleViewerDisplayMode('simulated')" class="px-2.5 py-1 text-[11px] font-medium text-slate-400 hover:text-white transition">Visão Local</button></div>
+                            <button onclick="refreshIframe()" title="Atualizar Painel" class="p-2 rounded-lg bg-slate-900 border border-dark-border text-slate-400 hover:text-white hover:bg-dark-hover transition"><i data-lucide="rotate-cw" class="w-4 h-4"></i></button>
+                            
+                            <details id="dashboard-zoom-details" class="relative">
                                 <summary id="fit-screen-btn" title="Ajustar tamanho do dashboard" class="list-none cursor-pointer p-2 rounded-lg bg-slate-900 border border-dark-border text-slate-400 hover:text-white hover:bg-dark-hover transition flex items-center justify-center">
                                     <i data-lucide="scan" class="w-4 h-4"></i>
                                 </summary>
@@ -104,12 +110,7 @@
                                     <button type="button" onclick="selectDashboardZoom(80, event)" data-zoom="80" class="dashboard-zoom-option w-full text-left px-2.5 py-2 rounded-lg text-[11px] text-slate-300 hover:bg-dark-hover">80% — Mais conteúdo</button>
                                     <button type="button" onclick="selectDashboardZoom(60, event)" data-zoom="60" class="dashboard-zoom-option w-full text-left px-2.5 py-2 rounded-lg text-[11px] text-slate-300 hover:bg-dark-hover">60% — Máximo conteúdo</button>
                                 </div>
-                            </details><div><div class="flex items-center space-x-2"><h2 id="viewer-title" class="text-sm font-bold text-white">---</h2><span id="viewer-platform-tag" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">---</span></div><span id="viewer-status" class="text-[10px] text-slate-400 flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5"></span> Dados Integrados</span></div></div>
-                        <div class="flex items-center space-x-2">
-                            <select id="viewer-select" onchange="switchViewerDashboard(this.value)" class="bg-slate-900 border border-dark-border text-xs rounded-lg px-3 py-1.5 text-slate-200 focus:outline-none focus:border-amber-500"></select>
-                            <div class="flex bg-slate-900 p-1 rounded-lg border border-dark-border"><button id="btn-mode-embed" onclick="toggleViewerDisplayMode('embed')" class="px-2.5 py-1 text-[11px] font-bold rounded-md bg-amber-500 text-black transition">Iframe Looker</button><button id="btn-mode-sim" onclick="toggleViewerDisplayMode('simulated')" class="px-2.5 py-1 text-[11px] font-medium text-slate-400 hover:text-white transition">Visão Local</button></div>
-                            <button onclick="refreshIframe()" title="Atualizar Painel" class="p-2 rounded-lg bg-slate-900 border border-dark-border text-slate-400 hover:text-white hover:bg-dark-hover transition"><i data-lucide="rotate-cw" class="w-4 h-4"></i></button>
-                            
+                            </details>
                             <button onclick="toggleFullscreen()" title="Modo Tela Cheia" class="p-2 rounded-lg bg-slate-900 border border-dark-border text-slate-400 hover:text-white hover:bg-dark-hover transition"><i data-lucide="maximize-2" class="w-4 h-4"></i></button>
                             <button onclick="openExternalUrl()" title="Abrir em Nova Aba no Looker" class="p-2 rounded-lg bg-slate-900 border border-dark-border text-slate-400 hover:text-white hover:bg-dark-hover transition"><i data-lucide="external-link" class="w-4 h-4"></i></button>
                         </div>
