@@ -499,31 +499,44 @@ function refreshIframe() {
 
 function setDashboardZoom(level) {
     const iframe = document.getElementById('main-iframe');
+    const zoomContainer = document.getElementById('dashboard-zoom-container');
     const button = document.getElementById('fit-screen-btn');
-    if (!iframe) return;
+    if (!iframe || !zoomContainer) return;
 
-    const scale = Number(level) / 100;
+    const numericLevel = Number(level);
+    const scale = numericLevel / 100;
 
-    // Escala diretamente o iframe. O viewport interno fica maior,
-    // permitindo que o Looker mostre mais conteúdo em 80%/60%.
+    // A escala é aplicada ao container, e não ao iframe.
+    // Isso evita que o próprio iframe/repaint do Looker "desfaça"
+    // visualmente o zoom logo após o clique.
+    zoomContainer.style.position = 'absolute';
+    zoomContainer.style.top = '0';
+    zoomContainer.style.left = '0';
+    zoomContainer.style.width = (100 / scale) + '%';
+    zoomContainer.style.height = (100 / scale) + '%';
+    zoomContainer.style.transform = 'scale(' + scale + ')';
+    zoomContainer.style.transformOrigin = 'top left';
+
+    // O iframe permanece ocupando todo o container ampliado.
     iframe.style.position = 'absolute';
     iframe.style.top = '0';
     iframe.style.left = '0';
-    iframe.style.width = (100 / scale) + '%';
-    iframe.style.height = (100 / scale) + '%';
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
     iframe.style.minHeight = '0';
-    iframe.style.transform = 'scale(' + scale + ')';
+    iframe.style.transform = 'none';
     iframe.style.transformOrigin = 'top left';
     iframe.style.zoom = '1';
 
-    iframe.dataset.zoomLevel = String(level);
+    zoomContainer.dataset.zoomLevel = String(numericLevel);
+    iframe.dataset.zoomLevel = String(numericLevel);
 
     if (button) {
-        button.title = 'Ajustar tamanho — atual: ' + level + '%';
-        button.classList.toggle('bg-amber-500', level !== 100);
-        button.classList.toggle('text-black', level !== 100);
-        button.classList.toggle('bg-slate-900', level === 100);
-        button.classList.toggle('text-slate-400', level === 100);
+        button.title = 'Ajustar tamanho — atual: ' + numericLevel + '%';
+        button.classList.toggle('bg-amber-500', numericLevel !== 100);
+        button.classList.toggle('text-black', numericLevel !== 100);
+        button.classList.toggle('bg-slate-900', numericLevel === 100);
+        button.classList.toggle('text-slate-400', numericLevel === 100);
     }
 
     document.querySelectorAll('.dashboard-zoom-option').forEach(option => {
@@ -531,13 +544,12 @@ function setDashboardZoom(level) {
         option.classList.add('text-slate-300');
     });
 
-    const active = document.querySelector('[data-zoom="' + level + '"]');
+    const active = document.querySelector('[data-zoom="' + numericLevel + '"]');
     if (active) {
         active.classList.remove('text-slate-300');
         active.classList.add('bg-amber-500', 'text-black', 'font-bold');
     }
 }
-
 function toggleDashboardZoom(event) {
     if (event) {
         event.preventDefault();
