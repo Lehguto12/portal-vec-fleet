@@ -518,7 +518,7 @@ function toggleFitToScreen() {
     } else {
         // Reduz visualmente o dashboard sem alterar o conteúdo interno do Looker.
         // O iframe fica proporcionalmente maior para compensar a escala.
-        const scale = 0.88;
+        const scale = 0.75;
         iframe.style.width = (100 / scale) + '%';
         iframe.style.height = (100 / scale) + '%';
         iframe.style.transform = 'scale(' + scale + ')';
