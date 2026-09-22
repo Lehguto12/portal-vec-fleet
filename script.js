@@ -323,6 +323,11 @@ function loadDashboardContent(dash) {
         iframe.onload = () => {
             clearTimeout(iframe._loadTimeout);
             if (loader) loader.classList.add('hidden');
+
+            // Mantém o nível de zoom escolhido pelo usuário após qualquer
+            // recarregamento do conteúdo do Looker.
+            const currentZoom = Number(iframe.dataset.zoomLevel || 100);
+            requestAnimationFrame(() => setDashboardZoom(currentZoom));
         };
 
         iframe.onerror = () => {
