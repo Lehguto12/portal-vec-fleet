@@ -506,9 +506,13 @@ function setDashboardZoom(level) {
     const numericLevel = Number(level);
     const percentage = Math.max(1, Math.min(100, numericLevel));
 
-    // TESTE: o tamanho do dashboard é alterado diretamente.
-    // Não usamos transform/scale, pois o objetivo é verificar
-    // se o próprio iframe responde à redução de largura/altura.
+    // Para mostrar o dashboard inteiro dentro da mesma área, não reduzimos
+    // o viewport do iframe. Em vez disso, aumentamos o iframe na proporção
+    // inversa e aplicamos scale. Assim 80%/60% mostram mais conteúdo sem
+    // criar uma segunda rolagem vertical para alcançar o restante.
+    const scale = percentage / 100;
+    const inverseSize = 100 / scale;
+
     zoomContainer.style.position = 'relative';
     zoomContainer.style.overflow = 'hidden';
     zoomContainer.style.width = '100%';
@@ -520,10 +524,11 @@ function setDashboardZoom(level) {
     iframe.style.setProperty('left', '0', 'important');
     iframe.style.setProperty('right', 'auto', 'important');
     iframe.style.setProperty('bottom', 'auto', 'important');
-    iframe.style.setProperty('width', percentage + '%', 'important');
-    iframe.style.setProperty('height', percentage + '%', 'important');
+    iframe.style.setProperty('width', inverseSize + '%', 'important');
+    iframe.style.setProperty('height', inverseSize + '%', 'important');
     iframe.style.setProperty('min-height', '0', 'important');
-    iframe.style.setProperty('transform', 'none', 'important');
+    iframe.style.setProperty('transform-origin', 'top left', 'important');
+    iframe.style.setProperty('transform', 'scale(' + scale + ')', 'important');
     iframe.style.setProperty('zoom', '1', 'important');
     iframe.dataset.zoomLevel = String(percentage);
     zoomContainer.dataset.zoomLevel = String(percentage);
