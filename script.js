@@ -505,13 +505,14 @@ function setDashboardZoom(level) {
 
     const numericLevel = Number(level);
     const scale = numericLevel / 100;
-    const viewportSize = 100 / scale;
 
-    // Mantém o iframe visível no mesmo espaço, mas aumenta o viewport
-    // interno proporcionalmente. Assim 60% realmente mostra mais
-    // conteúdo do Looker sem simplesmente encolher o painel.
-    zoomContainer.style.position = 'absolute';
-    zoomContainer.style.inset = '0';
+    // O Looker Studio está dentro de um iframe cross-origin.
+    // Não tentamos alterar o conteúdo interno do Looker.
+    // Em vez disso, o iframe é colocado dentro de um viewport que
+    // é escalado visualmente. O wrapper mantém o tamanho da área
+    // disponível e o iframe recebe o tamanho inverso da escala.
+    zoomContainer.style.position = 'relative';
+    zoomContainer.style.overflow = 'hidden';
     zoomContainer.style.width = '100%';
     zoomContainer.style.height = '100%';
     zoomContainer.style.transform = 'none';
@@ -519,8 +520,8 @@ function setDashboardZoom(level) {
     iframe.style.position = 'absolute';
     iframe.style.top = '0';
     iframe.style.left = '0';
-    iframe.style.width = viewportSize + '%';
-    iframe.style.height = viewportSize + '%';
+    iframe.style.width = (100 / scale) + '%';
+    iframe.style.height = (100 / scale) + '%';
     iframe.style.minHeight = '0';
     iframe.style.transform = 'scale(' + scale + ')';
     iframe.style.transformOrigin = 'top left';
