@@ -249,13 +249,14 @@ function navigateTo(viewName) {
     if (viewName === 'hub') {
         hubView.classList.remove('hidden');
         viewerView.classList.add('hidden');
+        document.body.classList.remove('dashboard-view-active');
         currentDashboardId = null;
     } else if (viewName === 'viewer') {
         hubView.classList.add('hidden');
         viewerView.classList.remove('hidden');
+        document.body.classList.add('dashboard-view-active');
     }
 }
-
 function openDashboardViewer(dashId) {
     const dash = dashboardsData.find(d => d.id === dashId);
     if (!dash) return;
