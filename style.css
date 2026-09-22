@@ -415,3 +415,13 @@ textarea:focus-visible {
     transform: none !important;
     zoom: 1 !important;
 }
+
+
+/* Ajuste fino: controles e dashboard um pouco mais para cima */
+#dashboard-zoom-details {
+    transform: translateY(-5px) !important;
+}
+
+#embed-wrapper {
+    transform: translateY(-12px) !important;
+}
