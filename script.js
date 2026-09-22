@@ -510,7 +510,11 @@ function setDashboardZoom(level) {
     if (!iframe || !zoomContainer) return;
 
     const percentage = Math.max(1, Math.min(100, Number(level)));
-    const scale = percentage === 80 ? 0.72 : percentage / 100;
+
+    // O iframe continua ocupando a janela inteira, mas o dashboard é
+    // reduzido visualmente e centralizado dentro da área branca.
+    // Assim aparecem margens em todos os lados sem aumentar a janela.
+    const scale = percentage / 100;
 
     // Mantém a janela do dashboard exatamente no mesmo tamanho.
     // O conteúdo apenas é reduzido visualmente dentro dela.
@@ -529,7 +533,7 @@ function setDashboardZoom(level) {
     iframe.style.setProperty('min-height', '0', 'important');
     iframe.style.setProperty('max-width', '100%', 'important');
     iframe.style.setProperty('max-height', '100%', 'important');
-    iframe.style.setProperty('transform-origin', 'top left', 'important');
+    iframe.style.setProperty('transform-origin', 'center center', 'important');
     iframe.style.setProperty('transform', percentage === 100 ? 'none' : 'scale(' + scale + ')', 'important');
     iframe.style.setProperty('zoom', '1', 'important');
 
