@@ -505,7 +505,7 @@ function setDashboardZoom(level) {
     if (!iframe || !zoomContainer) return;
 
     const percentage = Math.max(1, Math.min(100, Number(level)));
-    const scale = percentage / 100;
+    const scale = percentage === 80 ? 0.72 : percentage / 100;
     const inverseSize = 100 / scale;
 
     zoomContainer.style.position = 'relative';
