@@ -105,6 +105,11 @@ let kioskIndex = 0;
    --------------------------------------------------------- */
 
 document.addEventListener('DOMContentLoaded', () => {
+    const zoomMenu = document.getElementById('dashboard-zoom-menu');
+    if (zoomMenu && zoomMenu.parentElement !== document.body) {
+        document.body.appendChild(zoomMenu);
+    }
+
     setupClock();
     renderSidebarList();
     renderDashboardsGrid();
@@ -567,19 +572,29 @@ function positionZoomMenu() {
 
     const rect = summary.getBoundingClientRect();
     const menuWidth = menu.offsetWidth || 200;
-    const left = Math.max(8, Math.min(
-        window.innerWidth - menuWidth - 8,
-        rect.right - menuWidth
-    ));
+    const menuHeight = menu.offsetHeight || 140;
+    const gap = 8;
 
-    // Fixo na tela: impede que o navegador/stacking context faça o menu subir.
+    let left = rect.right - menuWidth;
+    left = Math.max(8, Math.min(window.innerWidth - menuWidth - 8, left));
+
+    // O menu está diretamente no body, fora do cabeçalho transformado.
+    // Portanto position:fixed usa a viewport real e fica alinhado ao botão.
+    let top = rect.bottom + gap;
+
+    // Nunca troca para cima: se faltar espaço, apenas mantém o menu
+    // dentro da viewport pela parte inferior.
+    if (top + menuHeight > window.innerHeight - 8) {
+        top = Math.max(8, window.innerHeight - menuHeight - 8);
+    }
+
     menu.style.setProperty('position', 'fixed', 'important');
-    menu.style.setProperty('top', (rect.bottom + 8) + 'px', 'important');
+    menu.style.setProperty('top', top + 'px', 'important');
     menu.style.setProperty('left', left + 'px', 'important');
     menu.style.setProperty('right', 'auto', 'important');
     menu.style.setProperty('bottom', 'auto', 'important');
+    menu.style.setProperty('margin', '0', 'important');
 }
-
 function openZoomMenu(event) {
     if (event) {
         event.preventDefault();
