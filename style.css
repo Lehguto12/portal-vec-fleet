@@ -529,3 +529,26 @@ header .text-amber-400 {
 #view-viewer > div.bg-dark-card.border.border-dark-border.rounded-xl {
     transform: translateY(-12px) !important;
 }
+
+
+/* Menu de zoom: preso ao botão no cabeçalho do dashboard */
+#zoom-control-wrapper {
+    position: relative !important;
+    z-index: 2147483646 !important;
+}
+#fit-screen-btn {
+    position: relative !important;
+    z-index: 2147483647 !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+#dashboard-zoom-menu {
+    position: absolute !important;
+    top: calc(100% + 8px) !important;
+    right: 0 !important;
+    left: auto !important;
+    bottom: auto !important;
+    margin: 0 !important;
+    z-index: 2147483647 !important;
+    pointer-events: auto !important;
+}
