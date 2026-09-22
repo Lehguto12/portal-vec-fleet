@@ -505,25 +505,31 @@ function toggleFitToScreen() {
     const isFit = iframe.dataset.fitScreen === 'true';
 
     if (isFit) {
+        // Volta ao tamanho normal.
+        iframe.style.zoom = '';
         iframe.style.transform = '';
         iframe.style.transformOrigin = '';
         iframe.style.width = '100%';
         iframe.style.height = '100%';
         iframe.dataset.fitScreen = 'false';
+
         if (button) {
             button.classList.remove('bg-amber-500', 'text-black');
             button.classList.add('bg-slate-900', 'text-slate-400');
             button.title = 'Ajustar dashboard ao tamanho da tela';
         }
     } else {
-        // Reduz visualmente o dashboard sem alterar o conteúdo interno do Looker.
-        // O iframe fica proporcionalmente maior para compensar a escala.
-        const scale = 0.75;
+        // Modo ajuste: usa zoom real do navegador no iframe, em vez de apenas
+        // transformar visualmente o elemento. Isso deixa mais conteúdo do
+        // relatório visível de uma vez no Chrome.
+        const scale = 0.70;
+        iframe.style.zoom = String(scale);
         iframe.style.width = (100 / scale) + '%';
         iframe.style.height = (100 / scale) + '%';
-        iframe.style.transform = 'scale(' + scale + ')';
+        iframe.style.transform = 'none';
         iframe.style.transformOrigin = 'top left';
         iframe.dataset.fitScreen = 'true';
+
         if (button) {
             button.classList.remove('bg-slate-900', 'text-slate-400');
             button.classList.add('bg-amber-500', 'text-black');
