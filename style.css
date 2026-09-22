@@ -378,10 +378,13 @@ textarea:focus-visible {
 
 
 /* TESTE TEMPORÁRIO: reduzir a janela branca do dashboard */
+/* TESTE: afastar a janela do dashboard para trás */
 #embed-wrapper {
     width: 80% !important;
     margin-left: auto !important;
     margin-right: auto !important;
+    transform: scale(0.90) !important;
+    transform-origin: center center !important;
 }
 
 #embed-wrapper #dashboard-zoom-container {
