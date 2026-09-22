@@ -497,47 +497,51 @@ function refreshIframe() {
     }
 }
 
-function toggleFitToScreen() {
+function setDashboardZoom(level) {
     const iframe = document.getElementById('main-iframe');
     const button = document.getElementById('fit-screen-btn');
     if (!iframe) return;
 
-    const isFit = iframe.dataset.fitScreen === 'true';
+    const scale = Number(level) / 100;
 
-    if (isFit) {
-        // Volta ao tamanho normal.
-        iframe.style.zoom = '';
-        iframe.style.transform = '';
-        iframe.style.transformOrigin = '';
-        iframe.style.width = '100%';
-        iframe.style.height = '100%';
-        iframe.dataset.fitScreen = 'false';
+    iframe.style.zoom = scale === 1 ? '' : String(scale);
+    iframe.style.transform = 'none';
+    iframe.style.transformOrigin = 'top left';
+    iframe.style.width = scale === 1 ? '100%' : (100 / scale) + '%';
+    iframe.style.height = scale === 1 ? '100%' : (100 / scale) + '%';
+    iframe.dataset.fitScreen = level === 100 ? 'false' : 'true';
+    iframe.dataset.zoomLevel = String(level);
 
-        if (button) {
-            button.classList.remove('bg-amber-500', 'text-black');
-            button.classList.add('bg-slate-900', 'text-slate-400');
-            button.title = 'Ajustar dashboard ao tamanho da tela';
-        }
-    } else {
-        // Modo ajuste: usa zoom real do navegador no iframe, em vez de apenas
-        // transformar visualmente o elemento. Isso deixa mais conteúdo do
-        // relatório visível de uma vez no Chrome.
-        const scale = 0.70;
-        iframe.style.zoom = String(scale);
-        iframe.style.width = (100 / scale) + '%';
-        iframe.style.height = (100 / scale) + '%';
-        iframe.style.transform = 'none';
-        iframe.style.transformOrigin = 'top left';
-        iframe.dataset.fitScreen = 'true';
+    if (button) {
+        button.classList.toggle('bg-amber-500', level !== 100);
+        button.classList.toggle('text-black', level !== 100);
+        button.classList.toggle('bg-slate-900', level === 100);
+        button.classList.toggle('text-slate-400', level === 100);
+        button.title = 'Zoom do dashboard: ' + level + '%';
+    }
 
-        if (button) {
-            button.classList.remove('bg-slate-900', 'text-slate-400');
-            button.classList.add('bg-amber-500', 'text-black');
-            button.title = 'Voltar ao tamanho normal';
-        }
+    document.querySelectorAll('.dashboard-zoom-option').forEach(btn => {
+        btn.classList.remove('bg-amber-500', 'text-black', 'font-bold');
+        btn.classList.add('text-slate-300');
+    });
+
+    const active = document.querySelector('[data-zoom="' + level + '"]');
+    if (active) {
+        active.classList.remove('text-slate-300');
+        active.classList.add('bg-amber-500', 'text-black', 'font-bold');
     }
 }
 
+function toggleFitToScreen() {
+    const current = Number(document.getElementById('main-iframe')?.dataset.zoomLevel || 100);
+    const next = current === 100 ? 80 : current === 80 ? 60 : 100;
+    setDashboardZoom(next);
+}
+
+function toggleZoomMenu() {
+    const menu = document.getElementById('dashboard-zoom-menu');
+    if (menu) menu.classList.toggle('hidden');
+}
 function toggleFullscreen() {
     const elem = document.getElementById('embed-wrapper');
     if (!elem) return;
