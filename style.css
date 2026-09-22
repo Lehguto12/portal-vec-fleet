@@ -631,3 +631,46 @@ body.dashboard-view-active #embed-wrapper {
     max-height: calc(100vh - 155px) !important;
     overflow: hidden !important;
 }
+
+/* =========================================================
+   CORREÇÃO DEFINITIVA - DIMENSIONAMENTO DA JANELA DO DASHBOARD
+   ========================================================= */
+#embed-wrapper {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: auto !important;
+    transform: translateY(-12px) !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+}
+
+#embed-wrapper #dashboard-zoom-container {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+}
+
+#embed-wrapper #main-iframe {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    border: 0 !important;
+    transform: none !important;
+    zoom: 1 !important;
+}
+
+body.dashboard-view-active #embed-wrapper {
+    height: calc(100vh - 155px) !important;
+    min-height: 0 !important;
+    max-height: calc(100vh - 155px) !important;
+}
