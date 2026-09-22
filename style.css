@@ -725,3 +725,15 @@ body.dashboard-view-active #view-viewer > div.bg-dark-card.border.border-dark-bo
     margin-bottom: 16px !important;
     z-index: 1000 !important;
 }
+
+/* CORREÇÃO FINAL DA BARRA DO VISUALIZADOR
+   Move somente a barra vermelha; o dashboard permanece na mesma posição.
+   Não usa transform, evitando recorte dos botões. */
+body.dashboard-view-active #view-viewer > div.bg-dark-card.border.border-dark-border.rounded-xl {
+    position: relative !important;
+    top: auto !important;
+    transform: none !important;
+    margin-top: -24px !important;
+    margin-bottom: 24px !important;
+    z-index: 1000 !important;
+}
