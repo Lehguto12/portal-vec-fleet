@@ -105,12 +105,6 @@ let kioskIndex = 0;
    --------------------------------------------------------- */
 
 document.addEventListener('DOMContentLoaded', () => {
-    const zoomMenu = document.getElementById('dashboard-zoom-menu');
-    if (zoomMenu && zoomMenu.parentElement !== document.body) {
-        document.body.appendChild(zoomMenu);
-    }
-    if (zoomMenu) zoomMenu.classList.add('hidden');
-
     setupClock();
     renderSidebarList();
     renderDashboardsGrid();
@@ -566,32 +560,21 @@ function toggleDashboardZoom(event) {
 }
 
 function positionZoomMenu() {
-    const button = document.getElementById('fit-screen-btn');
+    // O menu agora usa posicionamento absoluto dentro do wrapper do botão.
+    // Não é necessário calcular coordenadas da tela.
     const menu = document.getElementById('dashboard-zoom-menu');
-    if (!button || !menu || menu.classList.contains('hidden')) return;
-
-    const rect = button.getBoundingClientRect();
-    const menuWidth = menu.offsetWidth || 200;
-    const menuHeight = menu.offsetHeight || 140;
-    const gap = 8;
-
-    let left = rect.right - menuWidth;
-    left = Math.max(8, Math.min(window.innerWidth - menuWidth - 8, left));
-
-    let top = rect.bottom + gap;
-    if (top + menuHeight > window.innerHeight - 8) {
-        top = Math.max(8, window.innerHeight - menuHeight - 8);
+    if (menu) {
+        menu.style.removeProperty('position');
+        menu.style.removeProperty('top');
+        menu.style.removeProperty('left');
+        menu.style.removeProperty('right');
+        menu.style.removeProperty('bottom');
+        menu.style.removeProperty('z-index');
+        menu.style.removeProperty('margin');
     }
+}
 
-    menu.style.position = 'fixed';
-    menu.style.setProperty('top', top + 'px', 'important');
-    menu.style.setProperty('left', left + 'px', 'important');
-    menu.style.setProperty('right', 'auto', 'important');
-    menu.style.setProperty('bottom', 'auto', 'important');
-    menu.style.setProperty('position', 'fixed', 'important');
-    menu.style.setProperty('z-index', '2147483647', 'important');
-    menu.style.setProperty('margin', '0', 'important');
-}function toggleZoomMenu(event) {
+function toggleZoomMenu(event) {
     if (event) {
         event.preventDefault();
         event.stopPropagation();
@@ -659,42 +642,29 @@ function setupEventListeners() {
     const zoomButton = document.getElementById('fit-screen-btn');
     const zoomMenu = document.getElementById('dashboard-zoom-menu');
 
-    if (zoomButton) {
+    if (zoomButton && zoomMenu) {
         zoomButton.addEventListener('click', (event) => {
             event.preventDefault();
             event.stopPropagation();
+            zoomMenu.classList.toggle('hidden');
+        });
 
-            if (!zoomMenu) return;
+        zoomMenu.addEventListener('click', (event) => {
+            event.stopPropagation();
+        });
 
-            if (zoomMenu.classList.contains('hidden')) {
-                zoomMenu.classList.remove('hidden');
-                requestAnimationFrame(() => {
-                    positionZoomMenu();
-                    requestAnimationFrame(positionZoomMenu);
-                });
-            } else {
+        document.addEventListener('click', (event) => {
+            if (!zoomMenu.classList.contains('hidden') &&
+                !zoomButton.contains(event.target) &&
+                !zoomMenu.contains(event.target)) {
                 zoomMenu.classList.add('hidden');
             }
         });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') zoomMenu.classList.add('hidden');
+        });
     }
-
-    document.addEventListener('click', (event) => {
-        if (!zoomMenu || zoomMenu.classList.contains('hidden')) return;
-        if (event.target === zoomButton || zoomButton?.contains(event.target) || zoomMenu.contains(event.target)) return;
-        zoomMenu.classList.add('hidden');
-    });
-
-    window.addEventListener('resize', () => {
-        if (zoomMenu && !zoomMenu.classList.contains('hidden')) positionZoomMenu();
-    });
-
-    document.getElementById('content-area')?.addEventListener('scroll', () => {
-        if (zoomMenu && !zoomMenu.classList.contains('hidden')) positionZoomMenu();
-    }, { passive: true });
-
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && zoomMenu) zoomMenu.classList.add('hidden');
-    });
 
     /* --- FILTROS DE CATEGORIA --- */
     const categoryContainer = document.getElementById('category-filters');
