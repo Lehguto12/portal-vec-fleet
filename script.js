@@ -501,17 +501,12 @@ function setDashboardZoom(level) {
     const iframe = document.getElementById('main-iframe');
     const container = document.getElementById('dashboard-zoom-container');
     const button = document.getElementById('fit-screen-btn');
-    const menu = document.getElementById('dashboard-zoom-menu');
-
     if (!iframe || !container) return;
 
     const scale = Number(level) / 100;
 
-    // O Looker Studio está dentro de um iframe de outro domínio.
-    // Por isso, não tentamos alterar o zoom interno do Looker.
-    // Em vez disso, aumentamos o viewport do iframe e reduzimos
-    // visualmente o conjunto. Assim 80%/60% realmente mostram
-    // uma área maior do dashboard.
+    // Mantém o iframe com um viewport proporcionalmente maior
+    // e reduz apenas o conjunto visual. Não usa zoom no iframe.
     container.style.width = (100 / scale) + '%';
     container.style.height = (100 / scale) + '%';
     container.style.transform = 'scale(' + scale + ')';
@@ -519,11 +514,9 @@ function setDashboardZoom(level) {
 
     iframe.style.width = '100%';
     iframe.style.height = '100%';
-    iframe.style.zoom = '';
+    iframe.style.zoom = '1';
     iframe.style.transform = 'none';
-    iframe.style.transformOrigin = 'top left';
 
-    iframe.dataset.fitScreen = level === 100 ? 'false' : 'true';
     iframe.dataset.zoomLevel = String(level);
 
     if (button) {
@@ -544,10 +537,26 @@ function setDashboardZoom(level) {
         active.classList.remove('text-slate-300');
         active.classList.add('bg-amber-500', 'text-black', 'font-bold');
     }
+}
 
-    if (menu) {
-        menu.style.display = 'none';
+function openZoomMenu(event) {
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
     }
+    const menu = document.getElementById('dashboard-zoom-menu');
+    if (!menu) return;
+    menu.style.display = 'block';
+}
+
+function selectDashboardZoom(level, event) {
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    setDashboardZoom(level);
+    const menu = document.getElementById('dashboard-zoom-menu');
+    if (menu) menu.style.display = 'none';
 }
 
 function toggleFitToScreen() {
@@ -557,20 +566,9 @@ function toggleFitToScreen() {
     setDashboardZoom(next);
 }
 
-function toggleZoomMenu(event) {
-    const menu = document.getElementById('dashboard-zoom-menu');
-    if (!menu) return;
-
-    if (event) event.stopPropagation();
-
-    const isOpen = menu.style.display === 'block';
-    menu.style.display = isOpen ? 'none' : 'block';
-}
-
 document.addEventListener('click', (event) => {
     const menu = document.getElementById('dashboard-zoom-menu');
     const button = document.getElementById('fit-screen-btn');
-
     if (menu && button && !menu.contains(event.target) && !button.contains(event.target)) {
         menu.style.display = 'none';
     }
