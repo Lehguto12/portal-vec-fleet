@@ -504,38 +504,36 @@ function setDashboardZoom(level) {
     if (!iframe || !zoomContainer) return;
 
     const numericLevel = Number(level);
-    const scale = numericLevel / 100;
+    const percentage = Math.max(1, Math.min(100, numericLevel));
 
-    // O Looker Studio está dentro de um iframe cross-origin.
-    // Não tentamos alterar o conteúdo interno do Looker.
-    // Em vez disso, o iframe é colocado dentro de um viewport que
-    // é escalado visualmente. O wrapper mantém o tamanho da área
-    // disponível e o iframe recebe o tamanho inverso da escala.
+    // TESTE: o tamanho do dashboard é alterado diretamente.
+    // Não usamos transform/scale, pois o objetivo é verificar
+    // se o próprio iframe responde à redução de largura/altura.
     zoomContainer.style.position = 'relative';
     zoomContainer.style.overflow = 'hidden';
     zoomContainer.style.width = '100%';
     zoomContainer.style.height = '100%';
     zoomContainer.style.transform = 'none';
 
-    iframe.style.position = 'absolute';
-    iframe.style.top = '0';
-    iframe.style.left = '0';
-    iframe.style.width = (100 / scale) + '%';
-    iframe.style.height = (100 / scale) + '%';
-    iframe.style.minHeight = '0';
-    iframe.style.transform = 'scale(' + scale + ')';
-    iframe.style.transformOrigin = 'top left';
-    iframe.style.zoom = '1';
-
-    zoomContainer.dataset.zoomLevel = String(numericLevel);
-    iframe.dataset.zoomLevel = String(numericLevel);
+    iframe.style.setProperty('position', 'absolute', 'important');
+    iframe.style.setProperty('top', '0', 'important');
+    iframe.style.setProperty('left', '0', 'important');
+    iframe.style.setProperty('right', 'auto', 'important');
+    iframe.style.setProperty('bottom', 'auto', 'important');
+    iframe.style.setProperty('width', percentage + '%', 'important');
+    iframe.style.setProperty('height', percentage + '%', 'important');
+    iframe.style.setProperty('min-height', '0', 'important');
+    iframe.style.setProperty('transform', 'none', 'important');
+    iframe.style.setProperty('zoom', '1', 'important');
+    iframe.dataset.zoomLevel = String(percentage);
+    zoomContainer.dataset.zoomLevel = String(percentage);
 
     if (button) {
-        button.title = 'Ajustar tamanho — atual: ' + numericLevel + '%';
-        button.classList.toggle('bg-amber-500', numericLevel !== 100);
-        button.classList.toggle('text-black', numericLevel !== 100);
-        button.classList.toggle('bg-slate-900', numericLevel === 100);
-        button.classList.toggle('text-slate-400', numericLevel === 100);
+        button.title = 'Ajustar tamanho — atual: ' + percentage + '%';
+        button.classList.toggle('bg-amber-500', percentage !== 100);
+        button.classList.toggle('text-black', percentage !== 100);
+        button.classList.toggle('bg-slate-900', percentage === 100);
+        button.classList.toggle('text-slate-400', percentage === 100);
     }
 
     document.querySelectorAll('.dashboard-zoom-option').forEach(option => {
@@ -543,12 +541,13 @@ function setDashboardZoom(level) {
         option.classList.add('text-slate-300');
     });
 
-    const active = document.querySelector('[data-zoom="' + numericLevel + '"]');
+    const active = document.querySelector('[data-zoom="' + percentage + '"]');
     if (active) {
         active.classList.remove('text-slate-300');
         active.classList.add('bg-amber-500', 'text-black', 'font-bold');
     }
 }
+
 function toggleDashboardZoom(event) {
     if (event) {
         event.preventDefault();
