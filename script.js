@@ -559,53 +559,70 @@ function toggleDashboardZoom(event) {
     setDashboardZoom(next);
 }
 
+function getZoomMenu() {
+    return document.getElementById('dashboard-zoom-menu-portal');
+}
+
+function closeZoomMenu() {
+    const menu = getZoomMenu();
+    if (menu) menu.classList.add('hidden');
+}
+
 function positionZoomMenu() {
-    // O menu agora usa posicionamento absoluto dentro do wrapper do botão.
-    // Não é necessário calcular coordenadas da tela.
-    const menu = document.getElementById('dashboard-zoom-menu');
-    if (menu) {
-        menu.style.removeProperty('position');
-        menu.style.removeProperty('top');
-        menu.style.removeProperty('left');
-        menu.style.removeProperty('right');
-        menu.style.removeProperty('bottom');
-        menu.style.removeProperty('z-index');
-        menu.style.removeProperty('margin');
-    }
+    const menu = getZoomMenu();
+    const button = document.getElementById('fit-screen-btn');
+    if (!menu || !button) return;
+
+    const rect = button.getBoundingClientRect();
+    const gap = 8;
+
+    // O menu fica no body e usa coordenadas da viewport.
+    // Isso evita qualquer interferência de overflow, flex ou z-index dos pais.
+    menu.style.setProperty('position', 'fixed', 'important');
+    menu.style.setProperty('z-index', '2147483647', 'important');
+    menu.style.setProperty('top', (rect.bottom + gap) + 'px', 'important');
+    menu.style.setProperty('left', Math.max(8, rect.right - menu.offsetWidth) + 'px', 'important');
+    menu.style.setProperty('right', 'auto', 'important');
+    menu.style.setProperty('bottom', 'auto', 'important');
+    menu.style.setProperty('margin', '0', 'important');
 }
 
 function toggleZoomMenu(event) {
     if (event) {
         event.preventDefault();
-        event.stopPropagation();
+        event.stopImmediatePropagation();
     }
 
-    const menu = document.getElementById('dashboard-zoom-menu');
-    if (!menu) return;
+    const menu = getZoomMenu();
+    const button = document.getElementById('fit-screen-btn');
+    if (!menu || !button) return;
 
-    const willOpen = menu.classList.contains('hidden');
-    if (willOpen) {
+    if (menu.parentElement !== document.body) {
+        document.body.appendChild(menu);
+    }
+
+    const opening = menu.classList.contains('hidden');
+
+    if (opening) {
         menu.classList.remove('hidden');
-        requestAnimationFrame(positionZoomMenu);
+        positionZoomMenu();
     } else {
-        menu.classList.add('hidden');
+        closeZoomMenu();
     }
 }
 
 function openZoomMenu(event) {
     toggleZoomMenu(event);
 }
+
 function selectDashboardZoom(level, event) {
     if (event) {
         event.preventDefault();
-        event.stopPropagation();
+        event.stopImmediatePropagation();
     }
 
     setDashboardZoom(level);
-
-    // Fecha o <details> corretamente; não esconde o menu via display:none.
-    const menu = document.getElementById('dashboard-zoom-menu');
-    if (menu) menu.classList.add('hidden');
+    closeZoomMenu();
 }
 
 function toggleFitToScreen() {
@@ -640,13 +657,16 @@ function setupEventListeners() {
 
     /* --- MENU DE ZOOM DO DASHBOARD --- */
     const zoomButton = document.getElementById('fit-screen-btn');
-    const zoomMenu = document.getElementById('dashboard-zoom-menu');
+    const zoomMenu = getZoomMenu();
 
     if (zoomButton && zoomMenu) {
+        // O menu é portado para o body para não ser cortado por overflow.
+        if (zoomMenu.parentElement !== document.body) {
+            document.body.appendChild(zoomMenu);
+        }
+
         zoomButton.addEventListener('click', (event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            zoomMenu.classList.toggle('hidden');
+            toggleZoomMenu(event);
         });
 
         zoomMenu.addEventListener('click', (event) => {
@@ -657,13 +677,21 @@ function setupEventListeners() {
             if (!zoomMenu.classList.contains('hidden') &&
                 !zoomButton.contains(event.target) &&
                 !zoomMenu.contains(event.target)) {
-                zoomMenu.classList.add('hidden');
+                closeZoomMenu();
             }
         });
 
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') zoomMenu.classList.add('hidden');
+            if (event.key === 'Escape') closeZoomMenu();
         });
+
+        window.addEventListener('resize', () => {
+            if (!zoomMenu.classList.contains('hidden')) positionZoomMenu();
+        });
+
+        document.addEventListener('scroll', () => {
+            if (!zoomMenu.classList.contains('hidden')) positionZoomMenu();
+        }, true);
     }
 
     /* --- FILTROS DE CATEGORIA --- */
