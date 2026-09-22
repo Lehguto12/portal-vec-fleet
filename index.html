@@ -59,17 +59,7 @@
                 <div class="flex items-center space-x-4">
                     <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-dark-border"><i data-lucide="menu" class="w-5 h-5"></i></button>
                     <div class="relative w-64 md:w-80"><i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i><input type="text" id="global-search" placeholder="Buscar pátio, coordenador ou relatório..." class="w-full bg-slate-900/60 border border-dark-border rounded-xl pl-9 pr-4 py-1.5 text-xs focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 text-slate-200 placeholder-slate-500 transition">
-<details id="dashboard-zoom-details" class="relative">
-                                <summary id="fit-screen-btn" title="Ajustar tamanho do dashboard" class="list-none cursor-pointer p-2 rounded-lg bg-slate-900 border border-dark-border text-slate-400 hover:text-white hover:bg-dark-hover transition flex items-center justify-center">
-                                    <i data-lucide="scan" class="w-4 h-4"></i>
-                                </summary>
-                                <div id="dashboard-zoom-menu" style="position:absolute;right:0;top:42px;z-index:99999;" class="bg-dark-card border border-dark-border rounded-xl p-1.5 shadow-2xl min-w-[200px]">
-                                    <div class="px-2.5 py-1.5 text-[10px] uppercase tracking-wider text-slate-500 font-bold">Ajustar dashboard</div>
-                                    <button type="button" onclick="selectDashboardZoom(100, event)" data-zoom="100" class="dashboard-zoom-option w-full text-left px-2.5 py-2 rounded-lg text-[11px] bg-amber-500 text-black font-bold hover:bg-amber-400">100% — Normal</button>
-                                    <button type="button" onclick="selectDashboardZoom(80, event)" data-zoom="80" class="dashboard-zoom-option w-full text-left px-2.5 py-2 rounded-lg text-[11px] text-slate-300 hover:bg-dark-hover">80% — Mais conteúdo</button>
-                                    <button type="button" onclick="selectDashboardZoom(60, event)" data-zoom="60" class="dashboard-zoom-option w-full text-left px-2.5 py-2 rounded-lg text-[11px] text-slate-300 hover:bg-dark-hover">60% — Máximo conteúdo</button>
-                                </div>
-                            </details>
+
 </div>
                 </div>
                 <div class="flex items-center space-x-4">
@@ -103,7 +93,18 @@
                 <!-- VIEWER VIEW: sem fade-enter para não aplicar opacity:0 ao iframe -->
                 <div id="view-viewer" class="hidden space-y-3 min-h-0">
                     <div class="bg-dark-card border border-dark-border rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 shadow-md">
-                        <div class="flex items-center space-x-3"><button onclick="navigateTo('hub')" class="p-2 rounded-lg bg-slate-900 border border-dark-border text-slate-300 hover:text-white hover:bg-dark-hover transition flex items-center text-xs font-semibold"><i data-lucide="arrow-left" class="w-4 h-4 mr-1.5"></i> Central</button><div class="h-5 w-px bg-dark-border"></div><div><div class="flex items-center space-x-2"><h2 id="viewer-title" class="text-sm font-bold text-white">---</h2><span id="viewer-platform-tag" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">---</span></div><span id="viewer-status" class="text-[10px] text-slate-400 flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5"></span> Dados Integrados</span></div></div>
+                        <div class="flex items-center space-x-3"><button onclick="navigateTo('hub')" class="p-2 rounded-lg bg-slate-900 border border-dark-border text-slate-300 hover:text-white hover:bg-dark-hover transition flex items-center text-xs font-semibold"><i data-lucide="arrow-left" class="w-4 h-4 mr-1.5"></i> Central</button><div class="h-5 w-px bg-dark-border"></div>
+<details id="dashboard-zoom-details" class="relative">
+                                <summary id="fit-screen-btn" title="Ajustar tamanho do dashboard" class="list-none cursor-pointer p-2 rounded-lg bg-slate-900 border border-dark-border text-slate-400 hover:text-white hover:bg-dark-hover transition flex items-center justify-center">
+                                    <i data-lucide="scan" class="w-4 h-4"></i>
+                                </summary>
+                                <div id="dashboard-zoom-menu" style="position:absolute;right:0;top:42px;z-index:99999;" class="bg-dark-card border border-dark-border rounded-xl p-1.5 shadow-2xl min-w-[200px]">
+                                    <div class="px-2.5 py-1.5 text-[10px] uppercase tracking-wider text-slate-500 font-bold">Ajustar dashboard</div>
+                                    <button type="button" onclick="selectDashboardZoom(100, event)" data-zoom="100" class="dashboard-zoom-option w-full text-left px-2.5 py-2 rounded-lg text-[11px] bg-amber-500 text-black font-bold hover:bg-amber-400">100% — Normal</button>
+                                    <button type="button" onclick="selectDashboardZoom(80, event)" data-zoom="80" class="dashboard-zoom-option w-full text-left px-2.5 py-2 rounded-lg text-[11px] text-slate-300 hover:bg-dark-hover">80% — Mais conteúdo</button>
+                                    <button type="button" onclick="selectDashboardZoom(60, event)" data-zoom="60" class="dashboard-zoom-option w-full text-left px-2.5 py-2 rounded-lg text-[11px] text-slate-300 hover:bg-dark-hover">60% — Máximo conteúdo</button>
+                                </div>
+                            </details><div><div class="flex items-center space-x-2"><h2 id="viewer-title" class="text-sm font-bold text-white">---</h2><span id="viewer-platform-tag" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">---</span></div><span id="viewer-status" class="text-[10px] text-slate-400 flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5"></span> Dados Integrados</span></div></div>
                         <div class="flex items-center space-x-2">
                             <select id="viewer-select" onchange="switchViewerDashboard(this.value)" class="bg-slate-900 border border-dark-border text-xs rounded-lg px-3 py-1.5 text-slate-200 focus:outline-none focus:border-amber-500"></select>
                             <div class="flex bg-slate-900 p-1 rounded-lg border border-dark-border"><button id="btn-mode-embed" onclick="toggleViewerDisplayMode('embed')" class="px-2.5 py-1 text-[11px] font-bold rounded-md bg-amber-500 text-black transition">Iframe Looker</button><button id="btn-mode-sim" onclick="toggleViewerDisplayMode('simulated')" class="px-2.5 py-1 text-[11px] font-medium text-slate-400 hover:text-white transition">Visão Local</button></div>
