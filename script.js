@@ -510,43 +510,27 @@ function setDashboardZoom(level) {
     if (!iframe || !zoomContainer) return;
 
     const percentage = Math.max(1, Math.min(100, Number(level)));
-    // 80% = visualmente mais afastado, sem redimensionar o iframe.
-    // Isso evita que o Looker Studio recalcule o layout e "volte" ao tamanho anterior.
     const scale = percentage === 80 ? 0.72 : percentage / 100;
-    const inverseSize = 100 / scale;
 
+    // Mantém a janela do dashboard exatamente no mesmo tamanho.
+    // O conteúdo apenas é reduzido visualmente dentro dela.
     zoomContainer.style.setProperty('position', 'absolute', 'important');
-    zoomContainer.style.setProperty('top', '0', 'important');
-    zoomContainer.style.setProperty('left', '0', 'important');
-    zoomContainer.style.setProperty('right', 'auto', 'important');
-    zoomContainer.style.setProperty('bottom', 'auto', 'important');
-    zoomContainer.style.setProperty('overflow', 'visible', 'important');
-    zoomContainer.style.setProperty('transform-origin', 'top left', 'important');
-
-    // O iframe permanece sempre com 100% do seu próprio container.
-    // Apenas o container inteiro é afastado visualmente.
-    if (percentage === 100) {
-        zoomContainer.style.setProperty('width', '100%', 'important');
-        zoomContainer.style.setProperty('height', '100%', 'important');
-        zoomContainer.style.setProperty('transform', 'none', 'important');
-    } else {
-        zoomContainer.style.setProperty('width', inverseSize + '%', 'important');
-        zoomContainer.style.setProperty('height', inverseSize + '%', 'important');
-        zoomContainer.style.setProperty('transform', 'scale(' + scale + ')', 'important');
-    }
+    zoomContainer.style.setProperty('inset', '0', 'important');
+    zoomContainer.style.setProperty('width', '100%', 'important');
+    zoomContainer.style.setProperty('height', '100%', 'important');
+    zoomContainer.style.setProperty('overflow', 'hidden', 'important');
 
     iframe.style.setProperty('position', 'absolute', 'important');
     iframe.style.setProperty('top', '0', 'important');
     iframe.style.setProperty('left', '0', 'important');
-    iframe.style.setProperty('right', 'auto', 'important');
-    iframe.style.setProperty('bottom', 'auto', 'important');
     iframe.style.setProperty('width', '100%', 'important');
     iframe.style.setProperty('height', '100%', 'important');
     iframe.style.setProperty('min-width', '0', 'important');
     iframe.style.setProperty('min-height', '0', 'important');
-    iframe.style.setProperty('max-width', 'none', 'important');
-    iframe.style.setProperty('max-height', 'none', 'important');
-    iframe.style.setProperty('transform', 'none', 'important');
+    iframe.style.setProperty('max-width', '100%', 'important');
+    iframe.style.setProperty('max-height', '100%', 'important');
+    iframe.style.setProperty('transform-origin', 'top left', 'important');
+    iframe.style.setProperty('transform', percentage === 100 ? 'none' : 'scale(' + scale + ')', 'important');
     iframe.style.setProperty('zoom', '1', 'important');
 
     iframe.dataset.zoomLevel = String(percentage);
