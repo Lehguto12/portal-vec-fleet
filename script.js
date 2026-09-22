@@ -658,6 +658,22 @@ function setupEventListeners() {
     const zoomButton = document.getElementById('fit-screen-btn');
     const zoomMenu = document.getElementById('dashboard-zoom-menu');
 
+    if (zoomButton) {
+        zoomButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (!zoomMenu) return;
+
+            if (zoomMenu.classList.contains('hidden')) {
+                zoomMenu.classList.remove('hidden');
+                requestAnimationFrame(positionZoomMenu);
+            } else {
+                zoomMenu.classList.add('hidden');
+            }
+        });
+    }
+
     document.addEventListener('click', (event) => {
         if (!zoomMenu || zoomMenu.classList.contains('hidden')) return;
         if (event.target === zoomButton || zoomButton?.contains(event.target) || zoomMenu.contains(event.target)) return;
