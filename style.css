@@ -742,3 +742,9 @@ body.dashboard-view-active #view-viewer > div.bg-dark-card.border.border-dark-bo
 body.dashboard-view-active #view-viewer > div.bg-dark-card.border.border-dark-border.rounded-xl {
     padding-top: 20px !important;
 }
+
+/* Dá mais espaço vertical no topo para não cortar o título */
+body.dashboard-view-active #view-viewer > div.bg-dark-card.border.border-dark-border.rounded-xl {
+    padding-top: 28px !important;
+    padding-bottom: 12px !important;
+}
