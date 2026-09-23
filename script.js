@@ -91,7 +91,41 @@ const DEFAULT_DASHBOARDS = [
 ];
 
 const DASHBOARDS_STORAGE_KEY = 'vec_dashboards_v4';
-let dashboardsData = JSON.parse(localStorage.getItem(DASHBOARDS_STORAGE_KEY)) || JSON.parse(JSON.stringify(DEFAULT_DASHBOARDS));
+
+function loadDashboardsData() {
+    try {
+        const saved = localStorage.getItem(DASHBOARDS_STORAGE_KEY);
+        if (!saved) return JSON.parse(JSON.stringify(DEFAULT_DASHBOARDS));
+
+        const parsed = JSON.parse(saved);
+
+        // Garante que os 5 módulos esperados continuem disponíveis.
+        // Se uma versão antiga/incompleta estiver salva no navegador,
+        // usa os dados padrão em vez de interromper todo o JavaScript.
+        if (!Array.isArray(parsed) || parsed.length !== DEFAULT_DASHBOARDS.length) {
+            return JSON.parse(JSON.stringify(DEFAULT_DASHBOARDS));
+        }
+
+        const valid = parsed.every(item =>
+            item &&
+            item.id &&
+            item.title &&
+            item.category &&
+            item.platform &&
+            item.description &&
+            item.kpis &&
+            typeof item.kpis === 'object'
+        );
+
+        return valid ? parsed : JSON.parse(JSON.stringify(DEFAULT_DASHBOARDS));
+    } catch (error) {
+        console.warn('Configuração salva inválida. Restaurando os dashboards padrão.', error);
+        localStorage.removeItem(DASHBOARDS_STORAGE_KEY);
+        return JSON.parse(JSON.stringify(DEFAULT_DASHBOARDS));
+    }
+}
+
+let dashboardsData = loadDashboardsData();
 let activeFilter = 'all';
 let activeSearchQuery = '';
 let currentDashboardId = null;
