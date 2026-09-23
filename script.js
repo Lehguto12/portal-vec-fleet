@@ -513,10 +513,10 @@ function setDashboardZoom(level) {
     const percentage = Math.max(1, Math.min(100, Number(level) || 100));
     const scale = percentage / 100;
 
-    // O container permanece exatamente no tamanho disponível.
-    // O stage recebe um viewport REAL maior (1/scale) e é reduzido
-    // visualmente. O iframe continua 100% do stage, o que é mais
-    // confiável para o Looker do que aumentar diretamente o iframe.
+    // Mantemos um viewport fixo e aplicamos uma escala visual REAL.
+    // Assim 100%, 80% e 60% ficam inequivocamente diferentes.
+    // O dashboard fica centralizado e os espaços brancos aparecem
+    // naturalmente nas laterais/parte inferior quando reduzido.
     zoomContainer.style.setProperty('position', 'absolute', 'important');
     zoomContainer.style.setProperty('inset', '0', 'important');
     zoomContainer.style.setProperty('width', '100%', 'important');
@@ -524,8 +524,8 @@ function setDashboardZoom(level) {
     zoomContainer.style.setProperty('overflow', 'hidden', 'important');
 
     const rect = zoomContainer.getBoundingClientRect();
-    const width = Math.max(1, Math.round(rect.width / scale));
-    const height = Math.max(1, Math.round(rect.height / scale));
+    const width = Math.max(1, Math.round(rect.width));
+    const height = Math.max(1, Math.round(rect.height));
 
     stage.style.setProperty('position', 'absolute', 'important');
     stage.style.setProperty('left', '50%', 'important');
