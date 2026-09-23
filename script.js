@@ -511,13 +511,11 @@ function setDashboardZoom(level) {
 
     const percentage = Math.max(1, Math.min(100, Number(level)));
 
-    // O tamanho do próprio iframe acompanha a janela branca.
-    // 100% = ocupa toda a janela
-    // 80% = ocupa 80% da largura/altura, centralizado
-    // 60% = ocupa 60% da largura/altura, centralizado
-    // Não usamos transform/zoom: o dashboard realmente fica menor dentro da janela.
-    const size = percentage + '%';
-    const offset = ((100 - percentage) / 2) + '%';
+    // O iframe continua ocupando 100% da janela em todos os níveis.
+    // Assim o Looker mantém o viewport completo e não cria uma área
+    // interna de rolagem por causa de uma altura menor.
+    // O zoom é aplicado apenas VISUALMENTE ao iframe inteiro.
+    const scale = percentage / 100;
 
     zoomContainer.style.setProperty('position', 'absolute', 'important');
     zoomContainer.style.setProperty('inset', '0', 'important');
@@ -526,18 +524,19 @@ function setDashboardZoom(level) {
     zoomContainer.style.setProperty('overflow', 'hidden', 'important');
 
     iframe.style.setProperty('position', 'absolute', 'important');
-    iframe.style.setProperty('top', offset, 'important');
-    iframe.style.setProperty('left', offset, 'important');
+    iframe.style.setProperty('top', '0', 'important');
+    iframe.style.setProperty('left', '0', 'important');
     iframe.style.setProperty('right', 'auto', 'important');
     iframe.style.setProperty('bottom', 'auto', 'important');
-    iframe.style.setProperty('width', size, 'important');
-    iframe.style.setProperty('height', size, 'important');
+    iframe.style.setProperty('width', '100%', 'important');
+    iframe.style.setProperty('height', '100%', 'important');
     iframe.style.setProperty('min-width', '0', 'important');
     iframe.style.setProperty('min-height', '0', 'important');
     iframe.style.setProperty('max-width', 'none', 'important');
     iframe.style.setProperty('max-height', 'none', 'important');
     iframe.style.setProperty('margin', '0', 'important');
-    iframe.style.setProperty('transform', 'none', 'important');
+    iframe.style.setProperty('transform-origin', 'center center', 'important');
+    iframe.style.setProperty('transform', 'scale(' + scale + ')', 'important');
     iframe.style.setProperty('zoom', '1', 'important');
 
     iframe.dataset.zoomLevel = String(percentage);
