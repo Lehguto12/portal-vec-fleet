@@ -748,3 +748,25 @@ body.dashboard-view-active #view-viewer > div.bg-dark-card.border.border-dark-bo
     padding-top: 28px !important;
     padding-bottom: 12px !important;
 }
+
+
+/* =========================================================
+   DASHBOARD - ENQUADRAMENTO SEM ROLAGEM EXTERNA
+   O zoom do iframe aumenta o viewport antes de reduzir
+   visualmente, permitindo enxergar o painel completo.
+   ========================================================= */
+body.dashboard-view-active #content-area {
+    overflow: hidden !important;
+}
+body.dashboard-view-active #view-viewer {
+    overflow: hidden !important;
+}
+body.dashboard-view-active #embed-wrapper {
+    overflow: hidden !important;
+    height: calc(100vh - 155px) !important;
+    min-height: 0 !important;
+    max-height: calc(100vh - 155px) !important;
+}
+body.dashboard-view-active #dashboard-zoom-container {
+    overflow: hidden !important;
+}
