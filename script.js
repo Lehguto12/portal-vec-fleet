@@ -91,41 +91,7 @@ const DEFAULT_DASHBOARDS = [
 ];
 
 const DASHBOARDS_STORAGE_KEY = 'vec_dashboards_v4';
-
-function loadDashboardsData() {
-    try {
-        const saved = localStorage.getItem(DASHBOARDS_STORAGE_KEY);
-        if (!saved) return JSON.parse(JSON.stringify(DEFAULT_DASHBOARDS));
-
-        const parsed = JSON.parse(saved);
-
-        // Garante que os 5 módulos esperados continuem disponíveis.
-        // Se uma versão antiga/incompleta estiver salva no navegador,
-        // usa os dados padrão em vez de interromper todo o JavaScript.
-        if (!Array.isArray(parsed) || parsed.length !== DEFAULT_DASHBOARDS.length) {
-            return JSON.parse(JSON.stringify(DEFAULT_DASHBOARDS));
-        }
-
-        const valid = parsed.every(item =>
-            item &&
-            item.id &&
-            item.title &&
-            item.category &&
-            item.platform &&
-            item.description &&
-            item.kpis &&
-            typeof item.kpis === 'object'
-        );
-
-        return valid ? parsed : JSON.parse(JSON.stringify(DEFAULT_DASHBOARDS));
-    } catch (error) {
-        console.warn('Configuração salva inválida. Restaurando os dashboards padrão.', error);
-        localStorage.removeItem(DASHBOARDS_STORAGE_KEY);
-        return JSON.parse(JSON.stringify(DEFAULT_DASHBOARDS));
-    }
-}
-
-let dashboardsData = loadDashboardsData();
+let dashboardsData = JSON.parse(localStorage.getItem(DASHBOARDS_STORAGE_KEY)) || JSON.parse(JSON.stringify(DEFAULT_DASHBOARDS));
 let activeFilter = 'all';
 let activeSearchQuery = '';
 let currentDashboardId = null;
@@ -946,15 +912,4 @@ function showToast(message) {
     const container = document.getElementById('toast-container') || document.body;
     const toast = document.createElement('div');
 
-    toast.className = "fixed bottom-5 right-5 z-[99999] bg-slate-900 border border-dark-border text-white px-4 py-3 rounded-xl shadow-2xl text-xs font-semibold pointer-events-auto";
-    toast.textContent = message;
-
-    container.appendChild(toast);
-
-    setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateY(8px)';
-        toast.style.transition = 'opacity 200ms ease, transform 200ms ease';
-        setTimeout(() => toast.remove(), 220);
-    }, 2800);
-}
+    toast.className = `
