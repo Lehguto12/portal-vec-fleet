@@ -511,31 +511,17 @@ function setDashboardZoom(level) {
     if (!iframe || !zoomContainer) return;
 
     const percentage = Math.max(1, Math.min(100, Number(level) || 100));
-    const levelFactor = percentage === 60 ? 0.46 : percentage === 80 ? 0.60 : 0.72;
-    const baseScale = (percentage / 100) * levelFactor;
 
-    // Nos níveis reduzidos, o enquadramento usa a proporção da janela.
-    // O objetivo é manter o dashboard inteiro dentro da área branca,
-    // priorizando a altura para que o conteúdo inferior também apareça.
-    const containerWidth = zoomContainer.clientWidth || 1;
-    const containerHeight = zoomContainer.clientHeight || 1;
-    const iframeRatio = 16 / 9;
-    const heightFit = containerHeight / (containerWidth / iframeRatio);
-    const fitScale = Math.min(1, heightFit);
-    const scale = percentage === 60
-        ? Math.min(baseScale, baseScale * fitScale)
-        : baseScale;
+    // 100% = tamanho normal, ocupando exatamente a janela branca.
+    // 80% e 60% = reduções reais para enquadrar mais conteúdo.
+    const scale = percentage === 100 ? 1 : percentage === 80 ? 0.80 : 0.60;
 
-    // A janela branca é o limite físico do dashboard.
-    // O iframe é reduzido dentro dela, sem ultrapassar suas bordas.
     zoomContainer.style.setProperty('position', 'absolute', 'important');
     zoomContainer.style.setProperty('inset', '0', 'important');
     zoomContainer.style.setProperty('width', '100%', 'important');
     zoomContainer.style.setProperty('height', '100%', 'important');
     zoomContainer.style.setProperty('overflow', 'hidden', 'important');
 
-    // O stage não participa mais do zoom para evitar que seu tamanho
-    // compense a escala e faça os três níveis parecerem iguais.
     if (stage) {
         stage.style.setProperty('position', 'absolute', 'important');
         stage.style.setProperty('inset', '0', 'important');
@@ -555,8 +541,8 @@ function setDashboardZoom(level) {
     iframe.style.setProperty('height', '100%', 'important');
     iframe.style.setProperty('min-width', '0', 'important');
     iframe.style.setProperty('min-height', '0', 'important');
-    iframe.style.setProperty('max-width', '100%', 'important');
-    iframe.style.setProperty('max-height', '100%', 'important');
+    iframe.style.setProperty('max-width', 'none', 'important');
+    iframe.style.setProperty('max-height', 'none', 'important');
     iframe.style.setProperty('margin', '0', 'important');
     iframe.style.setProperty('border', '0', 'important');
     iframe.style.setProperty('transform', 'translate(-50%, -50%) scale(' + scale + ')', 'important');
@@ -586,7 +572,6 @@ function setDashboardZoom(level) {
         active.classList.add('bg-amber-500', 'text-black', 'font-bold');
     }
 }
-
 function toggleDashboardZoom(event) {
     if (event) {
         event.preventDefault();
