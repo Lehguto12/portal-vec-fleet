@@ -912,4 +912,15 @@ function showToast(message) {
     const container = document.getElementById('toast-container') || document.body;
     const toast = document.createElement('div');
 
-    toast.className = `
+    toast.className = "fixed bottom-5 right-5 z-[99999] bg-slate-900 border border-dark-border text-white px-4 py-3 rounded-xl shadow-2xl text-xs font-semibold pointer-events-auto";
+    toast.textContent = message;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(8px)';
+        toast.style.transition = 'opacity 200ms ease, transform 200ms ease';
+        setTimeout(() => toast.remove(), 220);
+    }, 2800);
+}
