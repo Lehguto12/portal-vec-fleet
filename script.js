@@ -531,7 +531,10 @@ function setDashboardZoom(level) {
     // Área virtual deliberadamente mais alta que uma página 16:9.
     // Isso dá espaço para cards + gráfico inferior sem depender do scroll interno.
     const virtualWidth = containerWidth * zoomFactor;
-    const virtualHeight = containerHeight * zoomFactor * 1.35;
+    // No modo 60%, aumentamos mais a altura virtual para que o dashboard
+    // inteiro caiba na janela, inclusive a parte inferior.
+    const heightMultiplier = percentage === 60 ? 1.75 : 1.35;
+    const virtualHeight = containerHeight * zoomFactor * heightMultiplier;
 
     const fitScale = Math.min(
         containerWidth / virtualWidth,
