@@ -506,47 +506,53 @@ function refreshIframe() {
 function setDashboardZoom(level) {
     const iframe = document.getElementById('main-iframe');
     const zoomContainer = document.getElementById('dashboard-zoom-container');
+    const stage = document.getElementById('dashboard-zoom-stage');
     const button = document.getElementById('fit-screen-btn');
-    if (!iframe || !zoomContainer) return;
+    if (!iframe || !zoomContainer || !stage) return;
 
-    const percentage = Math.max(1, Math.min(100, Number(level)));
-
-    // Para realmente "ver mais" em 80%/60%, o iframe precisa receber
-    // um viewport maior e depois ser reduzido visualmente. Assim o Looker
-    // renderiza também a parte inferior do dashboard, sem criar rolagem.
+    const percentage = Math.max(1, Math.min(100, Number(level) || 100));
     const scale = percentage / 100;
-    const inverseScale = 1 / scale;
 
+    // O container permanece exatamente no tamanho disponível.
+    // O stage recebe um viewport REAL maior (1/scale) e é reduzido
+    // visualmente. O iframe continua 100% do stage, o que é mais
+    // confiável para o Looker do que aumentar diretamente o iframe.
     zoomContainer.style.setProperty('position', 'absolute', 'important');
     zoomContainer.style.setProperty('inset', '0', 'important');
     zoomContainer.style.setProperty('width', '100%', 'important');
     zoomContainer.style.setProperty('height', '100%', 'important');
     zoomContainer.style.setProperty('overflow', 'hidden', 'important');
 
-    const containerRect = zoomContainer.getBoundingClientRect();
-    const viewportWidth = Math.max(1, containerRect.width / scale);
-    const viewportHeight = Math.max(1, containerRect.height / scale);
+    const rect = zoomContainer.getBoundingClientRect();
+    const width = Math.max(1, Math.round(rect.width / scale));
+    const height = Math.max(1, Math.round(rect.height / scale));
+
+    stage.style.setProperty('position', 'absolute', 'important');
+    stage.style.setProperty('left', '50%', 'important');
+    stage.style.setProperty('top', '50%', 'important');
+    stage.style.setProperty('width', width + 'px', 'important');
+    stage.style.setProperty('height', height + 'px', 'important');
+    stage.style.setProperty('transform', 'translate(-50%, -50%) scale(' + scale + ')', 'important');
+    stage.style.setProperty('transform-origin', 'center center', 'important');
+    stage.style.setProperty('overflow', 'hidden', 'important');
+    stage.style.setProperty('margin', '0', 'important');
 
     iframe.style.setProperty('position', 'absolute', 'important');
-    iframe.style.setProperty('top', '50%', 'important');
-    iframe.style.setProperty('left', '50%', 'important');
-    iframe.style.setProperty('right', 'auto', 'important');
-    iframe.style.setProperty('bottom', 'auto', 'important');
-    // Valores em pixels: calc(100% * fator) não é confiável para
-    // multiplicação CSS em todos os navegadores.
-    iframe.style.setProperty('width', viewportWidth + 'px', 'important');
-    iframe.style.setProperty('height', viewportHeight + 'px', 'important');
+    iframe.style.setProperty('inset', '0', 'important');
+    iframe.style.setProperty('width', '100%', 'important');
+    iframe.style.setProperty('height', '100%', 'important');
     iframe.style.setProperty('min-width', '0', 'important');
     iframe.style.setProperty('min-height', '0', 'important');
     iframe.style.setProperty('max-width', 'none', 'important');
     iframe.style.setProperty('max-height', 'none', 'important');
     iframe.style.setProperty('margin', '0', 'important');
-    iframe.style.setProperty('transform-origin', 'center center', 'important');
-    iframe.style.setProperty('transform', 'translate(-50%, -50%) scale(' + scale + ')', 'important');
+    iframe.style.setProperty('border', '0', 'important');
+    iframe.style.setProperty('transform', 'none', 'important');
     iframe.style.setProperty('zoom', '1', 'important');
 
     iframe.dataset.zoomLevel = String(percentage);
     zoomContainer.dataset.zoomLevel = String(percentage);
+    stage.dataset.zoomLevel = String(percentage);
 
     if (button) {
         button.title = 'Ajustar tamanho — atual: ' + percentage + '%';
@@ -567,6 +573,7 @@ function setDashboardZoom(level) {
         active.classList.add('bg-amber-500', 'text-black', 'font-bold');
     }
 }
+
 function toggleDashboardZoom(event) {
     if (event) {
         event.preventDefault();
