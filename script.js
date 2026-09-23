@@ -513,9 +513,12 @@ function setDashboardZoom(level) {
     const percentage = Math.max(1, Math.min(100, Number(level) || 100));
 
     /*
-     * 100% = o iframe ocupa exatamente toda a janela branca.
-     * 80% e 60% continuam oferecendo mais conteúdo, mas sem reduzir
-     * o iframe quando o usuário está no modo normal.
+     * O Looker tem rolagem própria quando a página do relatório é maior
+     * que o viewport do iframe. Apenas aplicar transform:scale() não remove
+     * essa rolagem. Aqui aumentamos de verdade o viewport interno e depois
+     * enquadramos esse viewport na janela branca.
+     *
+     * Quanto menor o percentual, maior é a área que o Looker recebe.
      */
     const zoomFactor =
         percentage === 100 ? 1 :
@@ -525,8 +528,17 @@ function setDashboardZoom(level) {
     const containerWidth = Math.max(1, zoomContainer.clientWidth);
     const containerHeight = Math.max(1, zoomContainer.clientHeight);
 
+    // Área virtual deliberadamente mais alta que uma página 16:9.
+    // Isso dá espaço para cards + gráfico inferior sem depender do scroll interno.
     const virtualWidth = containerWidth * zoomFactor;
-    const virtualHeight = containerHeight * zoomFactor;
+    const virtualHeight = containerHeight * zoomFactor * 1.35;
+
+    const fitScale = Math.min(
+        containerWidth / virtualWidth,
+        containerHeight / virtualHeight
+    );
+
+    const finalScale = fitScale;
 
     zoomContainer.style.setProperty('position', 'absolute', 'important');
     zoomContainer.style.setProperty('inset', '0', 'important');
@@ -549,16 +561,16 @@ function setDashboardZoom(level) {
     iframe.style.setProperty('top', '50%', 'important');
     iframe.style.setProperty('right', 'auto', 'important');
     iframe.style.setProperty('bottom', 'auto', 'important');
+
     iframe.style.setProperty('width', virtualWidth + 'px', 'important');
     iframe.style.setProperty('height', virtualHeight + 'px', 'important');
+
     iframe.style.setProperty('min-width', virtualWidth + 'px', 'important');
     iframe.style.setProperty('min-height', virtualHeight + 'px', 'important');
     iframe.style.setProperty('max-width', 'none', 'important');
     iframe.style.setProperty('max-height', 'none', 'important');
     iframe.style.setProperty('margin', '0', 'important');
     iframe.style.setProperty('border', '0', 'important');
-
-    const finalScale = percentage === 100 ? 1 : 1 / zoomFactor;
 
     iframe.style.setProperty(
         'transform',
@@ -898,88 +910,3 @@ function showToast(message) {
     const toast = document.createElement('div');
 
     toast.className = `
-        bg-slate-900 border border-amber-500/30 text-slate-100 px-4 py-3 
-        rounded-xl shadow-2xl flex items-center gap-3 transition-all duration-300 opacity-100 pointer-events-auto
-    `;
-
-    toast.innerHTML = `
-        <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 shrink-0"></i>
-        <span class="text-xs font-medium">${message}</span>
-    `;
-
-    container.appendChild(toast);
-
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-    }
-
-    setTimeout(() => {
-        toast.classList.add('opacity-0');
-        setTimeout(() => toast.remove(), 300);
-    }, 3000);
-}
-
-function shareDashboardLink(id) {
-    const url = `${window.location.origin}${window.location.pathname}?dashboard=${id}`;
-
-    if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(url)
-            .then(() => showToast('Link do módulo copiado!'))
-            .catch(() => fallbackCopy(url));
-    } else {
-        fallbackCopy(url);
-    }
-}
-
-function fallbackCopy(text) {
-    const textarea = document.createElement('textarea');
-    textarea.value = text;
-    textarea.style.position = 'fixed';
-    textarea.style.opacity = '0';
-
-    document.body.appendChild(textarea);
-    textarea.select();
-
-    try {
-        document.execCommand('copy');
-        showToast('Link do módulo copiado!');
-    } catch (err) {
-        showToast('Não foi possível copiar o link.');
-    }
-
-    textarea.remove();
-}
-
-function setupClock() {
-    const clockEl = document.getElementById('live-clock');
-    const dateEl = document.getElementById('live-date');
-
-    if (!clockEl) return;
-
-    function update() {
-        const now = new Date();
-        clockEl.textContent = now.toLocaleTimeString('pt-BR');
-        if (dateEl) {
-            dateEl.textContent = now.toLocaleDateString('pt-BR', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            });
-        }
-    }
-
-    update();
-    setInterval(update, 1000);
-}
-
-function checkUrlParams() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const dashboardId = urlParams.get('dashboard');
-
-    if (dashboardId) {
-        const target = dashboardsData.find(d => d.id === dashboardId);
-        if (target) {
-            openDashboardViewer(target.id);
-        }
-    }
-}
