@@ -508,51 +508,51 @@ function setDashboardZoom(level) {
     const zoomContainer = document.getElementById('dashboard-zoom-container');
     const stage = document.getElementById('dashboard-zoom-stage');
     const button = document.getElementById('fit-screen-btn');
-    if (!iframe || !zoomContainer || !stage) return;
+    if (!iframe || !zoomContainer) return;
 
     const percentage = Math.max(1, Math.min(100, Number(level) || 100));
     const scale = percentage / 100;
 
-    // Mantemos um viewport fixo e aplicamos uma escala visual REAL.
-    // Assim 100%, 80% e 60% ficam inequivocamente diferentes.
-    // O dashboard fica centralizado e os espaços brancos aparecem
-    // naturalmente nas laterais/parte inferior quando reduzido.
+    // A janela branca é o limite físico do dashboard.
+    // O iframe é reduzido dentro dela, sem ultrapassar suas bordas.
     zoomContainer.style.setProperty('position', 'absolute', 'important');
     zoomContainer.style.setProperty('inset', '0', 'important');
     zoomContainer.style.setProperty('width', '100%', 'important');
     zoomContainer.style.setProperty('height', '100%', 'important');
     zoomContainer.style.setProperty('overflow', 'hidden', 'important');
 
-    const rect = zoomContainer.getBoundingClientRect();
-    const width = Math.max(1, Math.round(rect.width));
-    const height = Math.max(1, Math.round(rect.height));
-
-    stage.style.setProperty('position', 'absolute', 'important');
-    stage.style.setProperty('left', '50%', 'important');
-    stage.style.setProperty('top', '50%', 'important');
-    stage.style.setProperty('width', width + 'px', 'important');
-    stage.style.setProperty('height', height + 'px', 'important');
-    stage.style.setProperty('transform', 'translate(-50%, -50%) scale(' + scale + ')', 'important');
-    stage.style.setProperty('transform-origin', 'center center', 'important');
-    stage.style.setProperty('overflow', 'hidden', 'important');
-    stage.style.setProperty('margin', '0', 'important');
+    // O stage não participa mais do zoom para evitar que seu tamanho
+    // compense a escala e faça os três níveis parecerem iguais.
+    if (stage) {
+        stage.style.setProperty('position', 'absolute', 'important');
+        stage.style.setProperty('inset', '0', 'important');
+        stage.style.setProperty('width', '100%', 'important');
+        stage.style.setProperty('height', '100%', 'important');
+        stage.style.setProperty('transform', 'none', 'important');
+        stage.style.setProperty('transform-origin', 'center center', 'important');
+        stage.style.setProperty('overflow', 'hidden', 'important');
+    }
 
     iframe.style.setProperty('position', 'absolute', 'important');
-    iframe.style.setProperty('inset', '0', 'important');
+    iframe.style.setProperty('left', '50%', 'important');
+    iframe.style.setProperty('top', '50%', 'important');
+    iframe.style.setProperty('right', 'auto', 'important');
+    iframe.style.setProperty('bottom', 'auto', 'important');
     iframe.style.setProperty('width', '100%', 'important');
     iframe.style.setProperty('height', '100%', 'important');
     iframe.style.setProperty('min-width', '0', 'important');
     iframe.style.setProperty('min-height', '0', 'important');
-    iframe.style.setProperty('max-width', 'none', 'important');
-    iframe.style.setProperty('max-height', 'none', 'important');
+    iframe.style.setProperty('max-width', '100%', 'important');
+    iframe.style.setProperty('max-height', '100%', 'important');
     iframe.style.setProperty('margin', '0', 'important');
     iframe.style.setProperty('border', '0', 'important');
-    iframe.style.setProperty('transform', 'none', 'important');
+    iframe.style.setProperty('transform', 'translate(-50%, -50%) scale(' + scale + ')', 'important');
+    iframe.style.setProperty('transform-origin', 'center center', 'important');
     iframe.style.setProperty('zoom', '1', 'important');
 
     iframe.dataset.zoomLevel = String(percentage);
     zoomContainer.dataset.zoomLevel = String(percentage);
-    stage.dataset.zoomLevel = String(percentage);
+    if (stage) stage.dataset.zoomLevel = String(percentage);
 
     if (button) {
         button.title = 'Ajustar tamanho — atual: ' + percentage + '%';
