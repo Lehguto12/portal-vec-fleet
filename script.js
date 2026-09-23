@@ -523,13 +523,19 @@ function setDashboardZoom(level) {
     zoomContainer.style.setProperty('height', '100%', 'important');
     zoomContainer.style.setProperty('overflow', 'hidden', 'important');
 
+    const containerRect = zoomContainer.getBoundingClientRect();
+    const viewportWidth = Math.max(1, containerRect.width / scale);
+    const viewportHeight = Math.max(1, containerRect.height / scale);
+
     iframe.style.setProperty('position', 'absolute', 'important');
     iframe.style.setProperty('top', '50%', 'important');
     iframe.style.setProperty('left', '50%', 'important');
     iframe.style.setProperty('right', 'auto', 'important');
     iframe.style.setProperty('bottom', 'auto', 'important');
-    iframe.style.setProperty('width', 'calc(100% * ' + inverseScale + ')', 'important');
-    iframe.style.setProperty('height', 'calc(100% * ' + inverseScale + ')', 'important');
+    // Valores em pixels: calc(100% * fator) não é confiável para
+    // multiplicação CSS em todos os navegadores.
+    iframe.style.setProperty('width', viewportWidth + 'px', 'important');
+    iframe.style.setProperty('height', viewportHeight + 'px', 'important');
     iframe.style.setProperty('min-width', '0', 'important');
     iframe.style.setProperty('min-height', '0', 'important');
     iframe.style.setProperty('max-width', 'none', 'important');
