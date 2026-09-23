@@ -513,12 +513,9 @@ function setDashboardZoom(level) {
     const percentage = Math.max(1, Math.min(100, Number(level) || 100));
 
     /*
-     * O Looker tem rolagem própria quando a página do relatório é maior
-     * que o viewport do iframe. Apenas aplicar transform:scale() não remove
-     * essa rolagem. Aqui aumentamos de verdade o viewport interno e depois
-     * enquadramos esse viewport na janela branca.
-     *
-     * Quanto menor o percentual, maior é a área que o Looker recebe.
+     * 100% = o iframe ocupa exatamente toda a janela branca.
+     * 80% e 60% continuam oferecendo mais conteúdo, mas sem reduzir
+     * o iframe quando o usuário está no modo normal.
      */
     const zoomFactor =
         percentage === 100 ? 1 :
@@ -528,17 +525,8 @@ function setDashboardZoom(level) {
     const containerWidth = Math.max(1, zoomContainer.clientWidth);
     const containerHeight = Math.max(1, zoomContainer.clientHeight);
 
-    // Área virtual deliberadamente mais alta que uma página 16:9.
-    // Isso dá espaço para cards + gráfico inferior sem depender do scroll interno.
     const virtualWidth = containerWidth * zoomFactor;
-    const virtualHeight = containerHeight * zoomFactor * 1.35;
-
-    const fitScale = Math.min(
-        containerWidth / virtualWidth,
-        containerHeight / virtualHeight
-    );
-
-    const finalScale = fitScale;
+    const virtualHeight = containerHeight * zoomFactor;
 
     zoomContainer.style.setProperty('position', 'absolute', 'important');
     zoomContainer.style.setProperty('inset', '0', 'important');
@@ -561,16 +549,16 @@ function setDashboardZoom(level) {
     iframe.style.setProperty('top', '50%', 'important');
     iframe.style.setProperty('right', 'auto', 'important');
     iframe.style.setProperty('bottom', 'auto', 'important');
-
     iframe.style.setProperty('width', virtualWidth + 'px', 'important');
     iframe.style.setProperty('height', virtualHeight + 'px', 'important');
-
     iframe.style.setProperty('min-width', virtualWidth + 'px', 'important');
     iframe.style.setProperty('min-height', virtualHeight + 'px', 'important');
     iframe.style.setProperty('max-width', 'none', 'important');
     iframe.style.setProperty('max-height', 'none', 'important');
     iframe.style.setProperty('margin', '0', 'important');
     iframe.style.setProperty('border', '0', 'important');
+
+    const finalScale = percentage === 100 ? 1 : 1 / zoomFactor;
 
     iframe.style.setProperty(
         'transform',
