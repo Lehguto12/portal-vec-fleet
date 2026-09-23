@@ -512,9 +512,11 @@ function setDashboardZoom(level) {
 
     const percentage = Math.max(1, Math.min(100, Number(level) || 100));
 
-    // 100% = tamanho normal, ocupando exatamente a janela branca.
-    // 80% e 60% = reduções reais para enquadrar mais conteúdo.
+    // O segredo para mostrar mais conteúdo não é apenas reduzir o iframe:
+    // precisamos aumentar o viewport interno e depois reduzi-lo visualmente.
+    // Assim o Looker recebe uma área maior e mais conteúdo cabe na janela branca.
     const scale = percentage === 100 ? 1 : percentage === 80 ? 0.80 : 0.60;
+    const viewportMultiplier = 1 / scale;
 
     zoomContainer.style.setProperty('position', 'absolute', 'important');
     zoomContainer.style.setProperty('inset', '0', 'important');
@@ -529,7 +531,7 @@ function setDashboardZoom(level) {
         stage.style.setProperty('height', '100%', 'important');
         stage.style.setProperty('transform', 'none', 'important');
         stage.style.setProperty('transform-origin', 'center center', 'important');
-        stage.style.setProperty('overflow', 'hidden', 'important');
+        stage.style.setProperty('overflow', 'visible', 'important');
     }
 
     iframe.style.setProperty('position', 'absolute', 'important');
@@ -537,15 +539,24 @@ function setDashboardZoom(level) {
     iframe.style.setProperty('top', '50%', 'important');
     iframe.style.setProperty('right', 'auto', 'important');
     iframe.style.setProperty('bottom', 'auto', 'important');
-    iframe.style.setProperty('width', '100%', 'important');
-    iframe.style.setProperty('height', '100%', 'important');
+
+    // Em 100% o viewport é exatamente o tamanho da janela.
+    // Em 80/60% o viewport fica maior antes da redução visual.
+    iframe.style.setProperty('width', (viewportMultiplier * 100) + '%', 'important');
+    iframe.style.setProperty('height', (viewportMultiplier * 100) + '%', 'important');
+
     iframe.style.setProperty('min-width', '0', 'important');
     iframe.style.setProperty('min-height', '0', 'important');
     iframe.style.setProperty('max-width', 'none', 'important');
     iframe.style.setProperty('max-height', 'none', 'important');
     iframe.style.setProperty('margin', '0', 'important');
     iframe.style.setProperty('border', '0', 'important');
-    iframe.style.setProperty('transform', 'translate(-50%, -50%) scale(' + scale + ')', 'important');
+
+    iframe.style.setProperty(
+        'transform',
+        'translate(-50%, -50%) scale(' + scale + ')',
+        'important'
+    );
     iframe.style.setProperty('transform-origin', 'center center', 'important');
     iframe.style.setProperty('zoom', '1', 'important');
 
