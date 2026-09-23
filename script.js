@@ -913,3 +913,88 @@ function showToast(message) {
     const toast = document.createElement('div');
 
     toast.className = `
+        bg-slate-900 border border-amber-500/30 text-slate-100 px-4 py-3
+        rounded-xl shadow-2xl flex items-center gap-3 transition-all duration-300 opacity-100 pointer-events-auto
+    `;
+
+    toast.innerHTML = `
+        <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 shrink-0"></i>
+        <span class="text-xs font-medium">${message}</span>
+    `;
+
+    container.appendChild(toast);
+
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+
+    setTimeout(() => {
+        toast.classList.add('opacity-0');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+function shareDashboardLink(id) {
+    const url = `${window.location.origin}${window.location.pathname}?dashboard=${id}`;
+
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(url)
+            .then(() => showToast('Link do módulo copiado!'))
+            .catch(() => fallbackCopy(url));
+    } else {
+        fallbackCopy(url);
+    }
+}
+
+function fallbackCopy(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+
+    document.body.appendChild(textarea);
+    textarea.select();
+
+    try {
+        document.execCommand('copy');
+        showToast('Link do módulo copiado!');
+    } catch (err) {
+        showToast('Não foi possível copiar o link.');
+    }
+
+    textarea.remove();
+}
+
+function setupClock() {
+    const clockEl = document.getElementById('live-clock');
+    const dateEl = document.getElementById('live-date');
+
+    if (!clockEl) return;
+
+    function update() {
+        const now = new Date();
+        clockEl.textContent = now.toLocaleTimeString('pt-BR');
+        if (dateEl) {
+            dateEl.textContent = now.toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+    }
+
+    update();
+    setInterval(update, 1000);
+}
+
+function checkUrlParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const dashboardId = urlParams.get('dashboard');
+
+    if (dashboardId) {
+        const target = dashboardsData.find(d => d.id === dashboardId);
+        if (target) {
+            openDashboardViewer(target.id);
+        }
+    }
+}
