@@ -511,7 +511,8 @@ function setDashboardZoom(level) {
     if (!iframe || !zoomContainer) return;
 
     const percentage = Math.max(1, Math.min(100, Number(level) || 100));
-    const scale = (percentage / 100) * 0.72;
+    const levelFactor = percentage === 60 ? 0.50 : percentage === 80 ? 0.62 : 0.72;
+    const scale = (percentage / 100) * levelFactor;
 
     // A janela branca é o limite físico do dashboard.
     // O iframe é reduzido dentro dela, sem ultrapassar suas bordas.
