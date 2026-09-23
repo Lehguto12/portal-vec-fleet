@@ -512,11 +512,33 @@ function setDashboardZoom(level) {
 
     const percentage = Math.max(1, Math.min(100, Number(level) || 100));
 
-    // O segredo para mostrar mais conteúdo não é apenas reduzir o iframe:
-    // precisamos aumentar o viewport interno e depois reduzi-lo visualmente.
-    // Assim o Looker recebe uma área maior e mais conteúdo cabe na janela branca.
-    const scale = percentage === 100 ? 1 : percentage === 80 ? 0.80 : 0.60;
-    const viewportMultiplier = 1 / scale;
+    /*
+     * O Looker tem rolagem própria quando a página do relatório é maior
+     * que o viewport do iframe. Apenas aplicar transform:scale() não remove
+     * essa rolagem. Aqui aumentamos de verdade o viewport interno e depois
+     * enquadramos esse viewport na janela branca.
+     *
+     * Quanto menor o percentual, maior é a área que o Looker recebe.
+     */
+    const zoomFactor =
+        percentage === 100 ? 1 :
+        percentage === 80 ? 1.25 :
+        1.60;
+
+    const containerWidth = Math.max(1, zoomContainer.clientWidth);
+    const containerHeight = Math.max(1, zoomContainer.clientHeight);
+
+    // Área virtual deliberadamente mais alta que uma página 16:9.
+    // Isso dá espaço para cards + gráfico inferior sem depender do scroll interno.
+    const virtualWidth = containerWidth * zoomFactor;
+    const virtualHeight = containerHeight * zoomFactor * 1.35;
+
+    const fitScale = Math.min(
+        containerWidth / virtualWidth,
+        containerHeight / virtualHeight
+    );
+
+    const finalScale = fitScale;
 
     zoomContainer.style.setProperty('position', 'absolute', 'important');
     zoomContainer.style.setProperty('inset', '0', 'important');
@@ -540,13 +562,11 @@ function setDashboardZoom(level) {
     iframe.style.setProperty('right', 'auto', 'important');
     iframe.style.setProperty('bottom', 'auto', 'important');
 
-    // Em 100% o viewport é exatamente o tamanho da janela.
-    // Em 80/60% o viewport fica maior antes da redução visual.
-    iframe.style.setProperty('width', (viewportMultiplier * 100) + '%', 'important');
-    iframe.style.setProperty('height', (viewportMultiplier * 100) + '%', 'important');
+    iframe.style.setProperty('width', virtualWidth + 'px', 'important');
+    iframe.style.setProperty('height', virtualHeight + 'px', 'important');
 
-    iframe.style.setProperty('min-width', '0', 'important');
-    iframe.style.setProperty('min-height', '0', 'important');
+    iframe.style.setProperty('min-width', virtualWidth + 'px', 'important');
+    iframe.style.setProperty('min-height', virtualHeight + 'px', 'important');
     iframe.style.setProperty('max-width', 'none', 'important');
     iframe.style.setProperty('max-height', 'none', 'important');
     iframe.style.setProperty('margin', '0', 'important');
@@ -554,7 +574,7 @@ function setDashboardZoom(level) {
 
     iframe.style.setProperty(
         'transform',
-        'translate(-50%, -50%) scale(' + scale + ')',
+        'translate(-50%, -50%) scale(' + finalScale + ')',
         'important'
     );
     iframe.style.setProperty('transform-origin', 'center center', 'important');
