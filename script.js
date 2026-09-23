@@ -511,8 +511,20 @@ function setDashboardZoom(level) {
     if (!iframe || !zoomContainer) return;
 
     const percentage = Math.max(1, Math.min(100, Number(level) || 100));
-    const levelFactor = percentage === 60 ? 0.50 : percentage === 80 ? 0.62 : 0.72;
-    const scale = (percentage / 100) * levelFactor;
+    const levelFactor = percentage === 60 ? 0.46 : percentage === 80 ? 0.60 : 0.72;
+    const baseScale = (percentage / 100) * levelFactor;
+
+    // Nos níveis reduzidos, o enquadramento usa a proporção da janela.
+    // O objetivo é manter o dashboard inteiro dentro da área branca,
+    // priorizando a altura para que o conteúdo inferior também apareça.
+    const containerWidth = zoomContainer.clientWidth || 1;
+    const containerHeight = zoomContainer.clientHeight || 1;
+    const iframeRatio = 16 / 9;
+    const heightFit = containerHeight / (containerWidth / iframeRatio);
+    const fitScale = Math.min(1, heightFit);
+    const scale = percentage === 60
+        ? Math.min(baseScale, baseScale * fitScale)
+        : baseScale;
 
     // A janela branca é o limite físico do dashboard.
     // O iframe é reduzido dentro dela, sem ultrapassar suas bordas.
